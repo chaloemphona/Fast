@@ -75,35 +75,6 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))  # Use Render's PORT
     uvicorn.run(app, host="0.0.0.0", port=port)
 
-
-class StandardResponse(BaseModel):
-    status: str = "success"  
-    message: str  
-    data: Optional[Any] = None  
-    metadata: Optional[dict] = None 
-
-def create_response(
-        status: str, 
-        message: str, 
-        data: Optional[dict] = None, 
-        metadata: Optional[dict] = None):
-    response = {
-        "status": status,
-        "message": message,
-        "data": data or {},
-        "metadata": metadata or {}
-    }
-    return response
-
-class Feature:
-    type: str
-    properties: dict
-    geometry: dict
-
-class GeoJSONResponse:
-    type: str
-    features: list[Feature]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -111,22 +82,6 @@ app.add_middleware(
     allow_methods=["*"], #allow_methods=["GET"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-def add_security_definitions():
-    if app.openapi_schema:
-        app.openapi_schema["components"] = app.openapi_schema.get("components", {})
-        app.openapi_schema["components"]["securitySchemes"] = {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-            }
-        }
-        for path in app.openapi_schema["paths"].values():
-            for method in path.values():
-                method["security"] = [{"bearerAuth": []}]
-
-
 
 #Error handle
 # custom handler เมื่อ URL ไม่ถูก

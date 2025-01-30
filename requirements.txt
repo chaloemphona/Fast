@@ -1,3 +1,16 @@
 fastapi
 uvicorn
+python-dotenv
 requests
+geojson
+duckdb
+h3
+redis
+aiohttp
+geopandas
+pandas
+jinja2
+sqlalchemy
+geoalchemy2
+asyncpg
+aiofiles

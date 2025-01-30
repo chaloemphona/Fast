@@ -236,6 +236,10 @@ async def custom_401_handler(request: Request, exc: HTTPException):
 
 
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI"}
+
 
 @app.get("/api/v1", tags=["Docs"])
 async def message():

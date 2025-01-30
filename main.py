@@ -127,23 +127,6 @@ def add_security_definitions():
                 method["security"] = [{"bearerAuth": []}]
 
 
-def load_geojson_file(file_path):
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail=f"GeoJSON file not found: {file_path}")
-    with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-try:
-    with open("C:/Users/Areeya Bunma/Desktop/pandas/acc/heatmap-rvp-death.geojson", "r", encoding="utf-8") as f:
-        geojson_data1 = json.load(f)
-except FileNotFoundError:
-    geojson_data1 = None
-
-file_path2 = "C:/Users/Areeya Bunma/Desktop/pandas/acc/accident_grids_itic_dbscan_2022_2020.geojson"
-try:
-    geojson_data2 = load_geojson_file(file_path2)
-except HTTPException as e:
-    geojson_data2 = None
 
 #Error handle
 # custom handler เมื่อ URL ไม่ถูก
@@ -197,8 +180,6 @@ async def custom_401_handler(request: Request, exc: HTTPException):
             "message": f"Unauthorized access to the endpoint '{request.url.path}'. You need to be authenticated to access this resource. Token is invalid or expired. .T_T.",
         },
     )
-
-
 
 
 @app.get("/api/v1", tags=["Docs"])

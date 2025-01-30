@@ -174,13 +174,13 @@ except HTTPException as e:
 #---------------------------------------
 ##
 ###
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-import os
-import os
-challenge_dir = r"C:\Users\Areeya Bunma\Desktop\pandas\FastAPI\.well-known\acme-challenge"
-print(f"Challenge directory: {challenge_dir}")
-app.mount("/.well-known", StaticFiles(directory=challenge_dir, html=False), name="acme-challenge")
+# from fastapi import FastAPI
+# from fastapi.staticfiles import StaticFiles
+# import os
+# import os
+# challenge_dir = r"C:\Users\Areeya Bunma\Desktop\pandas\FastAPI\.well-known\acme-challenge"
+# print(f"Challenge directory: {challenge_dir}")
+# app.mount("/.well-known", StaticFiles(directory=challenge_dir, html=False), name="acme-challenge")
 #Error handle
 # custom handler เมื่อ URL ไม่ถูก
 @app.exception_handler(404)

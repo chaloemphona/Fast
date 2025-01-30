@@ -99,6 +99,12 @@ class GeoJSONResponse:
 
 app = FastAPI()
 security = HTTPBearer()
+import os
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+
 
 # ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 # ssl_context.load_cert_chain(certfile="C:/ssl/cert.pem", keyfile="C:/ssl/key.pem")

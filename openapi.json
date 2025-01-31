@@ -18,6 +18,10 @@
     {
         "url": "http://127.0.0.1:8000",
         "description": "Chalo API localhost"
+    },
+    {
+        "url": "https://fast-w9y8.onrender.com",
+        "description": "Chalo API localhost"
     }
     ],
     "paths": {

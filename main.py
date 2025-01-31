@@ -751,7 +751,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
         
 class Place001(Base):
-            __tablename__ = "places_thh"
+            __tablename__ = "places_th"
             id = Column(Integer, primary_key=True, index=True)
             fsq_place_id = Column(String, unique=True, index=True)  
             name = Column(String, index=True)
@@ -1010,7 +1010,7 @@ async def get_places(
 ###
 #### บันทึกข้อมมูลลง ฐานข้อมูล ตาราง places_th
 class Place002(Base):
-    __tablename__ = "places_th"
+    __tablename__ = "places_thh"
     
     id = Column(Integer, primary_key=True, index=True)
     fsq_place_id = Column(String, unique=True, index=True)

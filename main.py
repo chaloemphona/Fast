@@ -315,174 +315,174 @@ async def protected_route(
 ##
 ###
 ## ใช้งานจริง ตอนนี้
-@app.get("/api/v1/duckDBs/places/th/region", response_model=StandardResponse, status_code=200, tags=["DuckDBs"])
-async def get_data_in_duckdbs_region(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    limit: int = Query(default=1000, ge=1),  
-    offset: int = Query(default=0, ge=0),
-    region: str = Query(default=None, description="Filter by region (e.g., 'Bangkok')")  
-):
-    """
-    Endpoint to fetch data from **DuckDB** table **places_th** in chunks as **GeoJSON**.
-    - **limit**: The number of records to return (default 1000)
-    - **offset**: The offset for pagination (default 0)
-    - **region**: Region filter (default None, fetches all regions)
-    """
+# @app.get("/api/v1/duckDBs/places/th/region", response_model=StandardResponse, status_code=200, tags=["DuckDBs"])
+# async def get_data_in_duckdbs_region(
+#     credentials: HTTPAuthorizationCredentials = Depends(security),
+#     limit: int = Query(default=1000, ge=1),  
+#     offset: int = Query(default=0, ge=0),
+#     region: str = Query(default=None, description="Filter by region (e.g., 'Bangkok')")  
+# ):
+#     """
+#     Endpoint to fetch data from **DuckDB** table **places_th** in chunks as **GeoJSON**.
+#     - **limit**: The number of records to return (default 1000)
+#     - **offset**: The offset for pagination (default 0)
+#     - **region**: Region filter (default None, fetches all regions)
+#     """
 
-    token = credentials.credentials 
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+#     token = credentials.credentials 
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
-    file_path = r"D:\parge\in_parge\places-00000.snappy.parquet"
-    try:
-        con = duckdb.connect()
-        con.execute(f"""
-            CREATE TABLE IF NOT EXISTS places_th AS
-            SELECT fsq_place_id, name, latitude, longitude, address, locality, region, country,
-                   date_created, date_refreshed, date_closed
-            FROM read_parquet([
-                    'D:\\parge\\in_parge\\places-00000.snappy.parquet',
-                    'D:\\parge\\in_parge\\places-00001.snappy.parquet',
-                    'D:\\parge\\in_parge\\places-00002.snappy.parquet'
-                    ])
-            WHERE country = 'TH'
-        """)
-        region_filter = f"WHERE region = '{region}'" if region else ""
-        query = f"""
-            SELECT * FROM places_th
-            {region_filter}
-            LIMIT {limit} OFFSET {offset}
-        """
-        rows = con.execute(query).fetchall()
-        column_headers = [desc[0] for desc in con.description]
-        features = []
-        for row in rows:
-            data = dict(zip(column_headers, row))
-            features.append({
-                "type": "Feature",
-                "properties": {
-                    key: value for key, value in data.items() if key not in ["latitude", "longitude"]
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [data["longitude"], data["latitude"]]
-                }
-            })
-        geojson = {
-            "type": "FeatureCollection",
-            "features": features
-        }
-        count_query = f"SELECT COUNT(*) FROM places_th {region_filter}"
-        row_count = con.execute(count_query).fetchone()[0]
-        con.close()
-        metadata = {
-            "row_count": len(features),
-            "next_offset": offset + limit,
-            "Total_all_data": row_count,
-            "data for ": {token_data['username']}
-        }
+#     file_path = r"D:\parge\in_parge\places-00000.snappy.parquet"
+#     try:
+#         con = duckdb.connect()
+#         con.execute(f"""
+#             CREATE TABLE IF NOT EXISTS places_th AS
+#             SELECT fsq_place_id, name, latitude, longitude, address, locality, region, country,
+#                    date_created, date_refreshed, date_closed
+#             FROM read_parquet([
+#                     'D:\\parge\\in_parge\\places-00000.snappy.parquet',
+#                     'D:\\parge\\in_parge\\places-00001.snappy.parquet',
+#                     'D:\\parge\\in_parge\\places-00002.snappy.parquet'
+#                     ])
+#             WHERE country = 'TH'
+#         """)
+#         region_filter = f"WHERE region = '{region}'" if region else ""
+#         query = f"""
+#             SELECT * FROM places_th
+#             {region_filter}
+#             LIMIT {limit} OFFSET {offset}
+#         """
+#         rows = con.execute(query).fetchall()
+#         column_headers = [desc[0] for desc in con.description]
+#         features = []
+#         for row in rows:
+#             data = dict(zip(column_headers, row))
+#             features.append({
+#                 "type": "Feature",
+#                 "properties": {
+#                     key: value for key, value in data.items() if key not in ["latitude", "longitude"]
+#                 },
+#                 "geometry": {
+#                     "type": "Point",
+#                     "coordinates": [data["longitude"], data["latitude"]]
+#                 }
+#             })
+#         geojson = {
+#             "type": "FeatureCollection",
+#             "features": features
+#         }
+#         count_query = f"SELECT COUNT(*) FROM places_th {region_filter}"
+#         row_count = con.execute(count_query).fetchone()[0]
+#         con.close()
+#         metadata = {
+#             "row_count": len(features),
+#             "next_offset": offset + limit,
+#             "Total_all_data": row_count,
+#             "data for ": {token_data['username']}
+#         }
 
-        return StandardResponse(
-            status="success",
-            message="Data fetched successfully as GeoJSON",
-            data=geojson,
-            metadata=metadata,
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error 500 Failed to fetch data from DuckDB: {str(e)}",
-        )
-    
-
-
+#         return StandardResponse(
+#             status="success",
+#             message="Data fetched successfully as GeoJSON",
+#             data=geojson,
+#             metadata=metadata,
+#         )
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=500,
+#             detail=f"Error 500 Failed to fetch data from DuckDB: {str(e)}",
+#         )
     
 
-@app.get("/api/v1/duckDBs/places/th/region/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
-def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
-    """
-    API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
-    """
-    token = credentials.credentials  
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
-    
-    
-    authorization_header = request.headers.get('Authorization')
-    if not authorization_header:
-        raise HTTPException(status_code=401, detail="Error 401 Missing or invalid Authorization token.")
-    token = authorization_header.split(" ")[1]  
-    
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "skip-browser-warning"
-    }
-    
-    response = requests.get("http://192.168.10.166:8000/api/v1/duckDBs/places/th/region?limit=260000", headers=headers)
-    
-    geojson_data = response.json()
-    if geojson_data.get("status") != "success":
-        return {"status": "error", "message": "Failed to fetch data"}
-    
-    features = geojson_data["data"]["features"]
-    h3_counts = {}
 
-    for feature in features:
-        geometry = feature.get("geometry")
-        if geometry and geometry.get("type") == "Point":
-            coordinates = geometry.get("coordinates")
-            if coordinates and len(coordinates) == 2:
-                lon, lat = coordinates
-                if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
-                    h3_index = h3.geo_to_h3(lat, lon, 6)
-                    if h3_index in h3_counts:
-                        h3_counts[h3_index] += 1
-                    else:
-                        h3_counts[h3_index] = 1
-                else:
-                    print(f"Skipping invalid coordinates: {coordinates}")
-            else:
-                print(f"Skipping malformed coordinates: {coordinates}")
-        else:
-            print(f"Skipping feature with invalid geometry: {geometry}")
     
-    h3_features = []
-    for h3_index, count in h3_counts.items():
-        polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
-        h3_features.append({
-            "type": "Feature",
-            "properties": {
-                "h3_index": h3_index,
-                "point_count": count
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [polygon_coords]
-            }
-        })
-    result_geojson = {
-        "type": "FeatureCollection",
-        "features": h3_features
-    }
-    metadata = {
-        "total_H3": len(h3_features),
-        "data for ": {token_data['username']}
-    }
-    return {
-        "status": "success",
-        "message": "Data converted to H3 successfully",
-        "data": result_geojson,
-        "metadata": metadata
-    }
+
+# @app.get("/api/v1/duckDBs/places/th/region/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
+# def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
+#     """
+#     API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
+#     """
+#     token = credentials.credentials  
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+    
+    
+#     authorization_header = request.headers.get('Authorization')
+#     if not authorization_header:
+#         raise HTTPException(status_code=401, detail="Error 401 Missing or invalid Authorization token.")
+#     token = authorization_header.split(" ")[1]  
+    
+#     headers = {
+#         "Authorization": f"Bearer {token}",
+#         "Content-Type": "application/json",
+#         "ngrok-skip-browser-warning": "skip-browser-warning"
+#     }
+    
+#     response = requests.get("http://192.168.10.166:8000/api/v1/duckDBs/places/th/region?limit=260000", headers=headers)
+    
+#     geojson_data = response.json()
+#     if geojson_data.get("status") != "success":
+#         return {"status": "error", "message": "Failed to fetch data"}
+    
+#     features = geojson_data["data"]["features"]
+#     h3_counts = {}
+
+#     for feature in features:
+#         geometry = feature.get("geometry")
+#         if geometry and geometry.get("type") == "Point":
+#             coordinates = geometry.get("coordinates")
+#             if coordinates and len(coordinates) == 2:
+#                 lon, lat = coordinates
+#                 if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
+#                     h3_index = h3.geo_to_h3(lat, lon, 6)
+#                     if h3_index in h3_counts:
+#                         h3_counts[h3_index] += 1
+#                     else:
+#                         h3_counts[h3_index] = 1
+#                 else:
+#                     print(f"Skipping invalid coordinates: {coordinates}")
+#             else:
+#                 print(f"Skipping malformed coordinates: {coordinates}")
+#         else:
+#             print(f"Skipping feature with invalid geometry: {geometry}")
+    
+#     h3_features = []
+#     for h3_index, count in h3_counts.items():
+#         polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
+#         h3_features.append({
+#             "type": "Feature",
+#             "properties": {
+#                 "h3_index": h3_index,
+#                 "point_count": count
+#             },
+#             "geometry": {
+#                 "type": "Polygon",
+#                 "coordinates": [polygon_coords]
+#             }
+#         })
+#     result_geojson = {
+#         "type": "FeatureCollection",
+#         "features": h3_features
+#     }
+#     metadata = {
+#         "total_H3": len(h3_features),
+#         "data for ": {token_data['username']}
+#     }
+#     return {
+#         "status": "success",
+#         "message": "Data converted to H3 successfully",
+#         "data": result_geojson,
+#         "metadata": metadata
+#     }
 
 
 
@@ -496,67 +496,67 @@ def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCreden
 ##
 ###
 ## data
-@app.get("/api/v1/accidents/heatmap-rvp-death", status_code=200, response_model=StandardResponse, tags=["Data GeoJSON"])
-async def get_accidents( credentials: HTTPAuthorizationCredentials = Depends(security),):  
-    """This endpoint retrieves the **GeoJSON** data from the file `heatmap-rvp-death.geojson`.
-    It also includes metadata about the file, such as the total number of features."""
+# @app.get("/api/v1/accidents/heatmap-rvp-death", status_code=200, response_model=StandardResponse, tags=["Data GeoJSON"])
+# async def get_accidents( credentials: HTTPAuthorizationCredentials = Depends(security),):  
+#     """This endpoint retrieves the **GeoJSON** data from the file `heatmap-rvp-death.geojson`.
+#     It also includes metadata about the file, such as the total number of features."""
 
-    token = credentials.credentials  
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+#     token = credentials.credentials  
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
-    if geojson_data1 is None:
-        return create_response(
-            status="error",  
-            message="GeoJSON file 'heatmap-rvp-death.geojson' not found.",
-        )
-    feature_count = len(geojson_data1.get("features", []))
-    return create_response(
-        status="success",  
-        message=f"GeoJSON for data retrieved successfully. ",
-        data=geojson_data1,
-        metadata={
-            "file_name": "heatmap-rvp-death.geojson",
-            "feature_count": feature_count,     
-        }
-    )
+#     if geojson_data1 is None:
+#         return create_response(
+#             status="error",  
+#             message="GeoJSON file 'heatmap-rvp-death.geojson' not found.",
+#         )
+#     feature_count = len(geojson_data1.get("features", []))
+#     return create_response(
+#         status="success",  
+#         message=f"GeoJSON for data retrieved successfully. ",
+#         data=geojson_data1,
+#         metadata={
+#             "file_name": "heatmap-rvp-death.geojson",
+#             "feature_count": feature_count,     
+#         }
+#     )
 
 
 
 
-@app.get("/api/v1/accidents/grids-dbscan-2022-2020", status_code=200, response_model=StandardResponse, tags=["Data GeoJSON"])
-async def get_accidents2(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """This endpoint retrieves **GeoJSON** data from the file `accident_grids_itic_dbscan_2022_2020.geojson`.
-    It includes metadata about the file, such as the total number of features. The file is processed 
-    and prepared to be returned in the GeoJSON format."""
+# @app.get("/api/v1/accidents/grids-dbscan-2022-2020", status_code=200, response_model=StandardResponse, tags=["Data GeoJSON"])
+# async def get_accidents2(credentials: HTTPAuthorizationCredentials = Depends(security)):
+#     """This endpoint retrieves **GeoJSON** data from the file `accident_grids_itic_dbscan_2022_2020.geojson`.
+#     It includes metadata about the file, such as the total number of features. The file is processed 
+#     and prepared to be returned in the GeoJSON format."""
 
-    token = credentials.credentials  
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+#     token = credentials.credentials  
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
-    if geojson_data2 is None:
-        return create_response(
-            status="error",
-            message="GeoJSON file 'accident_grids_itic_dbscan_2022_2020.geojson' not found."
-        )
-    feature_grids = len(geojson_data2.get("features", []))
-    return create_response(
-        status="success",
-        message=f"GeoJSON data retrieved successfully.",
-        data=geojson_data2,
-        metadata={
-            "file_name": "accident_grids_itic_dbscan_2022_2020.geojson",
-            "feature_count": feature_grids, 
-        }
-    )
+#     if geojson_data2 is None:
+#         return create_response(
+#             status="error",
+#             message="GeoJSON file 'accident_grids_itic_dbscan_2022_2020.geojson' not found."
+#         )
+#     feature_grids = len(geojson_data2.get("features", []))
+#     return create_response(
+#         status="success",
+#         message=f"GeoJSON data retrieved successfully.",
+#         data=geojson_data2,
+#         metadata={
+#             "file_name": "accident_grids_itic_dbscan_2022_2020.geojson",
+#             "feature_count": feature_grids, 
+#         }
+#     )
 
 
 
@@ -915,7 +915,7 @@ async def get_places(
 ###
 #### เรียกข้อมมูลจาก ฐานข้อมูล ตาราง places_h3_lv6
 class PlaceH3Lv6(Base):
-    __tablename__ = "places_h3_lv6"
+    __tablename__ = "places_h3_v6"
     id = Column(Integer, primary_key=True, index=True)
     h3_index = Column(String(255), index=True)
     point_count = Column(Integer)
@@ -1117,62 +1117,62 @@ async def import_places(credentials: HTTPAuthorizationCredentials = Depends(secu
 ##
 ###
 #### ดึงข้อมูลจากฐานข้อมูลมา เเล้วบันทึกเป็นไฟล์ geojson 
-@app.get("/api/v1/pgDBs/export_geojson", status_code=200, response_model=StandardResponse, tags=["postgres"])
-async def export_geojson(background_tasks: BackgroundTasks ,credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Endpoint เป็นการอ่านข้อมูลฝนตาราง **places_th** จากนั้นทำการบันทึกเป็ฯไฟล์ **Geojson** """
+# @app.get("/api/v1/pgDBs/export_geojson", status_code=200, response_model=StandardResponse, tags=["postgres"])
+# async def export_geojson(background_tasks: BackgroundTasks ,credentials: HTTPAuthorizationCredentials = Depends(security)):
+#     """Endpoint เป็นการอ่านข้อมูลฝนตาราง **places_th** จากนั้นทำการบันทึกเป็ฯไฟล์ **Geojson** """
     
-    token = credentials.credentials  
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+#     token = credentials.credentials  
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
-    async with SessionLocal() as session:
-        result = await session.execute(
-            select(
-                Place001.id,
-                Place001.fsq_place_id,
-                Place001.name,
-                Place001.address,
-                Place001.latitude,
-                Place001.longitude,
-                Place001.region,
-                Place001.country,
-                Place001.geometry
-            )
-        )
-        places = result.all()
+#     async with SessionLocal() as session:
+#         result = await session.execute(
+#             select(
+#                 Place001.id,
+#                 Place001.fsq_place_id,
+#                 Place001.name,
+#                 Place001.address,
+#                 Place001.latitude,
+#                 Place001.longitude,
+#                 Place001.region,
+#                 Place001.country,
+#                 Place001.geometry
+#             )
+#         )
+#         places = result.all()
 
-        features = []
-        for place in places:
-            features.append({
-                "type": "Feature",
-                "properties": {
-                    "id": place.id,
-                    "fsq_place_id": place.fsq_place_id,
-                    "name": place.name,
-                    "address": place.address,
-                    "region": place.region,
-                    "country": place.country
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [float(place.longitude), float(place.latitude)]
-                }
-            })
+#         features = []
+#         for place in places:
+#             features.append({
+#                 "type": "Feature",
+#                 "properties": {
+#                     "id": place.id,
+#                     "fsq_place_id": place.fsq_place_id,
+#                     "name": place.name,
+#                     "address": place.address,
+#                     "region": place.region,
+#                     "country": place.country
+#                 },
+#                 "geometry": {
+#                     "type": "Point",
+#                     "coordinates": [float(place.longitude), float(place.latitude)]
+#                 }
+#             })
 
-        geojson_data = {
-            "type": "FeatureCollection",
-            "features": features
-        }
+#         geojson_data = {
+#             "type": "FeatureCollection",
+#             "features": features
+#         }
 
-        async def save_to_file():
-            async with aiofiles.open("places.geojson", "w", encoding="utf-8") as f:
-                await f.write(json.dumps(geojson_data, indent=2, ensure_ascii=False))
-        background_tasks.add_task(save_to_file)
-    return {"status": "success", "message": "GeoJSON export started in background"}
+#         async def save_to_file():
+#             async with aiofiles.open("places.geojson", "w", encoding="utf-8") as f:
+#                 await f.write(json.dumps(geojson_data, indent=2, ensure_ascii=False))
+#         background_tasks.add_task(save_to_file)
+#     return {"status": "success", "message": "GeoJSON export started in background"}
 
 
 
@@ -1183,91 +1183,91 @@ async def export_geojson(background_tasks: BackgroundTasks ,credentials: HTTPAut
 ##
 ###
 #### ดึงข้อมูลจากฐานข้อมูลมา เเล้วบันทึกเป็นไฟล์ geojson  เเลวนำไฟลืนั้นมาทำ H3 level 6 เเล้วส่งกลับไปยัง places_h3_lv6
-GEOJSON_FILE_PATH = r"C:\Users\Areeya Bunma\Desktop\pandas\FastAPI\places.geojson"
+# GEOJSON_FILE_PATH = r"C:\Users\Areeya Bunma\Desktop\pandas\FastAPI\places.geojson"
 
-@app.get("/api/v1/pgDBs/places/th/imhexagon", status_code=200, response_model=StandardResponse, tags=["postgres"])
-async def convert_geojson_to_h3(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Endpoint เป็นการอ่านข้อมูลในไฟล์ **Geojson** เเล้วเเปลงเป็ฯ **H3** **level** **6** จากนั้นบันทึกลงตาราง **places_h3_lv6**"""
+# @app.get("/api/v1/pgDBs/places/th/imhexagon", status_code=200, response_model=StandardResponse, tags=["postgres"])
+# async def convert_geojson_to_h3(credentials: HTTPAuthorizationCredentials = Depends(security)):
+#     """Endpoint เป็นการอ่านข้อมูลในไฟล์ **Geojson** เเล้วเเปลงเป็ฯ **H3** **level** **6** จากนั้นบันทึกลงตาราง **places_h3_lv6**"""
     
-    token = credentials.credentials  
-    if token not in tokens:
-        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-    token_data = tokens[token]
-    if datetime.utcnow() > token_data["expiration_time"]:
-        del tokens[token]
-        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+#     token = credentials.credentials  
+#     if token not in tokens:
+#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+#     token_data = tokens[token]
+#     if datetime.utcnow() > token_data["expiration_time"]:
+#         del tokens[token]
+#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
-    try:
-        async with aiofiles.open(GEOJSON_FILE_PATH, mode="r", encoding="utf-8") as f:
-            geojson_str = await f.read()
-        geojson_data = json.loads(geojson_str)
-        features = geojson_data.get("features", [])
-        h3_counts = {}
-        for feature in features:
-            geometry = feature.get("geometry")
-            if not geometry or geometry.get("type") != "Point":
-                continue  
-            coordinates = geometry.get("coordinates")
-            if not coordinates or len(coordinates) != 2:
-                continue 
-            lon, lat = coordinates
-            if not isinstance(lon, (int, float)) or not isinstance(lat, (int, float)):
-                continue
-            if lon == 0 and lat == 0:
-                continue 
-            if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
-                continue 
-            try:
-                h3_index = h3.geo_to_h3(lat, lon, 6)
-                if h3_index in h3_counts:
-                    h3_counts[h3_index] += 1
-                else:
-                    h3_counts[h3_index] = 1
-            except Exception as e:
-                print(f"Skipping invalid H3 conversion: {coordinates}, Error: {e}")
-        async with SessionLocal() as session:
-            async with session.begin():
-                for h3_index, count in h3_counts.items():
-                    polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
-                    polygon_wkt = f"POLYGON(({','.join(f'{lon} {lat}' for lon, lat in polygon_coords)}))"
-                    insert_query = text("""
-                        INSERT INTO places_h3_lv6 (h3_index, point_count, geometry)
-                        VALUES (:h3_index, :point_count, ST_GeomFromText(:geometry, 4326))
-                    """)
-                    await session.execute(insert_query, {
-                        "h3_index": h3_index,
-                        "point_count": count,
-                        "geometry": polygon_wkt
-                    })
-        h3_features = []
-        for h3_index, count in h3_counts.items():
-            polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
-            h3_features.append({
-                "type": "Feature",
-                "properties": {
-                    "h3_index": h3_index,
-                    "point_count": count
-                },
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [polygon_coords]
-                }
-            })
-        result_geojson = {
-            "type": "FeatureCollection",
-            "features": h3_features
-        }
-        metadata = {
-            "total_H3": len(h3_features)
-        }
-        return {
-            "status": "success",
-            "message": "Data converted to H3 and saved to database successfully",
-            "data": result_geojson,
-            "metadata": metadata
-        }
-    except Exception as e:
-        return {"status": "error", "message": f"Failed to process data: {str(e)}"}
+#     try:
+#         async with aiofiles.open(GEOJSON_FILE_PATH, mode="r", encoding="utf-8") as f:
+#             geojson_str = await f.read()
+#         geojson_data = json.loads(geojson_str)
+#         features = geojson_data.get("features", [])
+#         h3_counts = {}
+#         for feature in features:
+#             geometry = feature.get("geometry")
+#             if not geometry or geometry.get("type") != "Point":
+#                 continue  
+#             coordinates = geometry.get("coordinates")
+#             if not coordinates or len(coordinates) != 2:
+#                 continue 
+#             lon, lat = coordinates
+#             if not isinstance(lon, (int, float)) or not isinstance(lat, (int, float)):
+#                 continue
+#             if lon == 0 and lat == 0:
+#                 continue 
+#             if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+#                 continue 
+#             try:
+#                 h3_index = h3.geo_to_h3(lat, lon, 6)
+#                 if h3_index in h3_counts:
+#                     h3_counts[h3_index] += 1
+#                 else:
+#                     h3_counts[h3_index] = 1
+#             except Exception as e:
+#                 print(f"Skipping invalid H3 conversion: {coordinates}, Error: {e}")
+#         async with SessionLocal() as session:
+#             async with session.begin():
+#                 for h3_index, count in h3_counts.items():
+#                     polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
+#                     polygon_wkt = f"POLYGON(({','.join(f'{lon} {lat}' for lon, lat in polygon_coords)}))"
+#                     insert_query = text("""
+#                         INSERT INTO places_h3_lv6 (h3_index, point_count, geometry)
+#                         VALUES (:h3_index, :point_count, ST_GeomFromText(:geometry, 4326))
+#                     """)
+#                     await session.execute(insert_query, {
+#                         "h3_index": h3_index,
+#                         "point_count": count,
+#                         "geometry": polygon_wkt
+#                     })
+#         h3_features = []
+#         for h3_index, count in h3_counts.items():
+#             polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
+#             h3_features.append({
+#                 "type": "Feature",
+#                 "properties": {
+#                     "h3_index": h3_index,
+#                     "point_count": count
+#                 },
+#                 "geometry": {
+#                     "type": "Polygon",
+#                     "coordinates": [polygon_coords]
+#                 }
+#             })
+#         result_geojson = {
+#             "type": "FeatureCollection",
+#             "features": h3_features
+#         }
+#         metadata = {
+#             "total_H3": len(h3_features)
+#         }
+#         return {
+#             "status": "success",
+#             "message": "Data converted to H3 and saved to database successfully",
+#             "data": result_geojson,
+#             "metadata": metadata
+#         }
+#     except Exception as e:
+#         return {"status": "error", "message": f"Failed to process data: {str(e)}"}
 
 
 if __name__ == "__main__":

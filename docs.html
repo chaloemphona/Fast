@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css">
+<link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/128/15665/15665844.png">
+<title>Chalo API</title>
+<style>
+        body {
+            background-color: #ffffff;
+        }
+        .swagger-ui .topbar {
+            background-color: #af4c9e;
+        }
+        .swagger-ui .btn {
+            background-color: #ff9950;
+            color: #fff;
+        }
+        .swagger-ui .btn:hover {  
+           background-color: #d1d1d1;
+        }
+        /* .swagger-ui .opblock-summary {
+            background-color: #fafafa;
+            border-left: 5px solid #fe5555;
+        } */
+        .swagger-ui .opblock-summary:hover {
+                background-color: #CFD8DC;
+            }
+        .swagger-ui .responses-inner {
+            background-color: #FAFAFA;
+        } 
+        .swagger-ui .info {
+            display: none;
+        }
+        .swagger-ui .dialog-ux .modal-ux-header .close-modal {
+            background-color: #ffffff; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            padding: 5px 15px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+        }
+        .swagger-ui .dialog-ux .modal-ux-header .close-modal:hover {
+            background-color: #f9c1c1; 
+        }
+
+        .content {
+            margin-left: 300px;
+            padding: 20px;
+            width: calc(100% - 340px);
+        }
+        .topbar {
+            background-color: #ffffff;
+            padding: 20px;
+            color: rgb(16, 16, 16);
+            text-align: left;
+            width: 100%; 
+            height: auto;  
+        }
+        h1 {
+          font-family: 'Arial', sans-serif; 
+          font-size: 36px; 
+          color: #000000;
+          font-weight: bold; 
+          text-align: left; 
+          margin-bottom: 30px;
+         
+        }
+        a {
+            font-family: 'Arial', sans-serif;
+            text-decoration: none; 
+            font-size: 16px; 
+            color: #5b5b5b; 
+            font-weight: bold;
+            transition: color 0.1s ease; 
+        }
+        a:hover {
+            color: #ff7b00; 
+        }
+        a:active {
+            color: #ff0800; /
+        }
+        a[rel="noopener noreferrer"] {
+            cursor: pointer; 
+        }
+        #core {
+            background-color: #ffffff; 
+            border-radius: 10px; 
+            padding: 10px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+            transition: box-shadow 0.2s ease; 
+            width: 100%; 
+            max-width: 1470px; 
+            height: auto; 
+        }
+        #kore {
+            border: 2px solid #858585; 
+            border-radius: 8px; 
+            padding: 10px; 
+            background-color: #f9f9f9; 
+            border-radius: 10px; 
+            padding: 15px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+            transition: box-shadow 0.2s ease; 
+            width: 100%; 
+            max-width: 350px;
+            height: auto; 
+        }
+
+        #openapi-version {
+            font-family: 'Arial', sans-serif; 
+            font-size: 13px;
+            color: #ffffff; 
+            font-weight: bold;
+            margin-left: 10px; 
+            padding: 5px 5px; 
+            background-color: #8cd038; 
+            border-radius: 20px; 
+        }
+        #info-version {
+            font-family: 'Arial', sans-serif; 
+            font-size: 13px; 
+            color: #ffffff; 
+            font-weight: bold; 
+            margin-left: 10px;
+            padding: 5px 5px; 
+            background-color: #8a8a8a; 
+            border-radius: 20px; 
+        }
+        #des-version {
+            display: block;
+            color: #535353;
+            font-size: 1em; 
+            line-height: 1.5;
+            padding: 10px;
+            margin: 0 auto;
+            max-width: 98%; 
+            text-align: left; 
+            box-sizing: border-box;
+        }
+        /* #title-version {
+            font-family: 'Arial', sans-serif; 
+            font-size: 45px; 
+            color: #000000; 
+            font-weight: bold; 
+            margin-left: 10px;
+            padding: 5px 5px; 
+            border-radius: 20px; 
+        } */
+
+</style>
+</head>
+<body>
+<div>
+  <div class="topbar">
+    <h1>
+        <img src="https://cdn-icons-png.flaticon.com/128/15665/15665844.png" alt="Logo" style="height: 50px; vertical-align: middle; margin-right: 5px;">
+         <span id="title-version"></span> 
+         <span id="info-version"></span>
+         <span id="openapi-version"></span>
+    </h1>
+    <span id="des-version"></span>
+  </div>
+  <div id="swagger-ui"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+<!-- //        /chaapi        /openapi.json        /chalo-api.json   http://192.168.10.166:8000   http://127.0.0.1:8000 -->
+<script>
+    async function loadOpenAPI() {
+      try {
+        const response = await fetch('/chalo-api.json');
+        const apiData = await response.json();
+  
+        const openapiVersion = apiData.openapi;
+        const versionElement = document.getElementById('openapi-version');
+        versionElement.textContent = ` OAS ${openapiVersion}`;
+        
+        const infoversion = apiData.info.version;
+        const infoElement = document.getElementById('info-version');
+        infoElement.textContent = `${infoversion}`;
+
+        // const serverversion = apiData.servers[0].url;
+        // const serverElement = document.getElementById('server-version');
+        // serverElement.setAttribute('href', serverversion);
+        // serverElement.textContent = serverversion;
+
+        const desversion = apiData.info.description;
+        const desElement = document.getElementById('des-version');
+        desElement.textContent = `${desversion}`;
+
+        const tiversion = apiData.info.title;
+        const tiElement = document.getElementById('title-version');
+        tiElement.textContent = `${tiversion}`;
+  
+      } catch (error) {
+        console.error('Error fetching OpenAPI data:', error);
+      }
+    }
+    const ui = SwaggerUIBundle({
+      url: '/chalo-api.json',
+      dom_id: "#swagger-ui",
+      layout: "BaseLayout",
+      deepLinking: true,
+      showExtensions: true,
+      showCommonExtensions: true,
+      oauth2RedirectUrl: window.location.origin + '/docs/oauth2-redirect',
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIBundle.SwaggerUIStandalonePreset
+      ],
+    });
+  
+    // เรียกฟังก์ชันเพื่อโหลด OpenAPI
+    loadOpenAPI();
+  </script>
+  
+</body>
+</html>

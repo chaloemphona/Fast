@@ -216,21 +216,31 @@ async def message():
 
 
 templates = Jinja2Templates(directory="templates")
+docs_url = "https://raw.githubusercontent.com/chaloemphona/Fast/refs/heads/main/docs.html"
+openapi_url = "https://raw.githubusercontent.com/chaloemphona/Fast/refs/heads/main/openapi.json"
+
 @app.get("/chalo-docs", response_class=HTMLResponse, tags=["Docs"])
-async def read_docs():    
+async def read_docs():
     """
     The document describes information about Chalo.com APIs, including how to access data, usage, and related details.
     """
     try:
-        file_path = os.path.join(os.getcwd(), 'templates', 'docs.html')
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-    except Exception as e:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(docs_url)
+            response.raise_for_status() 
+            return HTMLResponse(content=response.text, status_code=200)
+    except httpx.HTTPStatusError as e:
         return f"Error loading docs.html: {e}"
 
 @app.get("/chalo-api.json", response_class=HTMLResponse, tags=["Docs"])
 async def custom_docs(request: Request):
-    return templates.TemplateResponse("openapi.json", {"request": request})
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(openapi_url)
+            response.raise_for_status()  
+            return HTMLResponse(content=response.text, status_code=200)
+    except httpx.HTTPStatusError as e:
+        return f"Error loading openapi.json: {e}"
 
 
 #---------------------------------------

@@ -14,3 +14,4 @@ sqlalchemy
 geoalchemy2
 asyncpg
 aiofiles
+psycopg2

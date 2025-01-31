@@ -732,8 +732,16 @@ async def github_selects_data_endpoint(file: str = Query(..., description="Name 
 ##
 ###
 #### เรียกข้อมมูลจาก ฐานข้อมูล ตาราง places_th
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/FSQ_DB"
-engine = create_async_engine(DATABASE_URL, echo=True)
+# DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/FSQ_DB"
+# engine = create_async_engine(DATABASE_URL, echo=True)
+# SessionLocal = sessionmaker(
+#     bind=engine, 
+#     class_=AsyncSession, 
+#     expire_on_commit=False
+#         )
+
+DATABASE_URL = "postgresql+asyncpg://neondb_owner:npg_OQ7G9bfaekzV@ep-small-credit-a9tj4gjc-pooler.gwc.azure.neon.tech:5432/neondb"
+engine = create_async_engine(DATABASE_URL, echo=True, connect_args={"ssl": True})
 SessionLocal = sessionmaker(
     bind=engine, 
     class_=AsyncSession, 
@@ -743,7 +751,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
         
 class Place001(Base):
-            __tablename__ = "places_th"
+            __tablename__ = "places_thh"
             id = Column(Integer, primary_key=True, index=True)
             fsq_place_id = Column(String, unique=True, index=True)  
             name = Column(String, index=True)
@@ -1002,7 +1010,7 @@ async def get_places(
 ###
 #### บันทึกข้อมมูลลง ฐานข้อมูล ตาราง places_th
 class Place002(Base):
-    __tablename__ = "places_thh"
+    __tablename__ = "places_th"
     
     id = Column(Integer, primary_key=True, index=True)
     fsq_place_id = Column(String, unique=True, index=True)

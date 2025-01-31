@@ -732,7 +732,7 @@ async def github_selects_data_endpoint(file: str = Query(..., description="Name 
 ##
 ###
 #### เรียกข้อมมูลจาก ฐานข้อมูล ตาราง places_th
-DATABASE_URL = "postgresql://neondb_owner:npg_mO7Tezb1sQyd@ep-yellow-smoke-a105p8pk-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/FSQ_DB"
 engine = create_async_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(
     bind=engine, 

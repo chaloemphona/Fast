@@ -25,721 +25,532 @@
     }
     ],
     "paths": {
-        "/api/v1": {
-        "get": {
-            "tags": [
-            "Docs"
-            ],
-            "summary": "Message",
-            "description": "Test that the domain is valid and the endpoint is working.",
-            "operationId": "message_api_v1_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/chalo-docs": {
-        "get": {
-            "tags": [
-            "Docs"
-            ],
-            "summary": "Read Docs",
-            "description": "The document describes information about Chalo.com APIs, including how to access data, usage, and related details.",
-            "operationId": "read_docs_chalo_docs_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "text/html": {
-                    "schema": {
-                    "type": "string"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/chalo-api.json": {
-        "get": {
-            "tags": [
-            "Docs"
-            ],
-            "summary": "Custom Docs",
-            "operationId": "custom_docs_chalo_api_json_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "text/html": {
-                    "schema": {
-                    "type": "string"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/token": {
-        "post": {
-            "tags": [
-            "Authentication"
-            ],
-            "summary": "Create Token",
-            "operationId": "create_token_api_v1_token_post",
-            "requestBody": {
+    "/": {
+      "get": {
+        "summary": "Read Root",
+        "operationId": "read_root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
-                "application/json": {
+              "application/json": {
                 "schema": {
-                    "$ref": "#/components/schemas/TokenRequest"
-                }
-                }
-            },
-            "required": true
-            },
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
 
-                    }
                 }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
+              }
             }
-            }
+          }
         }
-        },
-        "/api/v1/protected": {
-        "get": {
-            "tags": [
-            "Authentication"
-            ],
-            "summary": "Protected Route",
-            "description": "- ถ้าไม่ใส่โทเค็น เเล้วส่งคำขอเลยจะได้ **403**\n- ถ้าใส่โทเค็นผิด เเล้วส่งคำขอจะได้ **401** \n- ถ้าใส่โทเค็นถูก เเล้วส่งคำขอจะได้ **200** กับ **500**",
-            "operationId": "protected_route_api_v1_protected_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        },
-        "/api/v1/duckDBs/places/th/region": {
-        "get": {
-            "tags": [
-            "DuckDBs"
-            ],
-            "summary": "Get Data In Duckdbs Region",
-            "description": "Endpoint to fetch data from **DuckDB** table **places_th** in chunks as **GeoJSON**.\n- **limit**: The number of records to return (default 1000)\n- **offset**: The offset for pagination (default 0)\n- **region**: Region filter (default None, fetches all regions)",
-            "operationId": "get_data_in_duckdbs_region_api_v1_duckDBs_places_th_region_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "limit",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "default": 1000,
-                "title": "Limit"
-                }
-            },
-            {
-                "name": "offset",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 0,
-                "default": 0,
-                "title": "Offset"
-                }
-            },
-            {
-                "name": "region",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "string",
-                "description": "Filter by region (e.g., 'Bangkok')",
-                "title": "Region"
-                },
-                "description": "Filter by region (e.g., 'Bangkok')"
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/duckDBs/places/th/region/hexagon": {
-        "get": {
-            "tags": [
-            "H3"
-            ],
-            "summary": "Convert Geojson To H3",
-            "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
-            "operationId": "convert_geojson_to_h3_api_v1_duckDBs_places_th_region_hexagon_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        },
-        "/api/v1/accidents/heatmap-rvp-death": {
-        "get": {
-            "tags": [
-            "Data GeoJSON"
-            ],
-            "summary": "Get Accidents",
-            "description": "This endpoint retrieves the **GeoJSON** data from the file `heatmap-rvp-death.geojson`.\nIt also includes metadata about the file, such as the total number of features.",
-            "operationId": "get_accidents_api_v1_accidents_heatmap_rvp_death_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        },
-        "/api/v1/accidents/grids-dbscan-2022-2020": {
-        "get": {
-            "tags": [
-            "Data GeoJSON"
-            ],
-            "summary": "Get Accidents2",
-            "description": "This endpoint retrieves **GeoJSON** data from the file `accident_grids_itic_dbscan_2022_2020.geojson`.\nIt includes metadata about the file, such as the total number of features. The file is processed \nand prepared to be returned in the GeoJSON format.",
-            "operationId": "get_accidents2_api_v1_accidents_grids_dbscan_2022_2020_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        },
-        "/api/v1/github/accident/heatmap-rvp-death": {
-        "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Geojson From Github Heatmap Rvp Death",
-            "description": "Endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
-            "operationId": "geojson_from_github_heatmap_rvp_death_api_v1_github_accident_heatmap_rvp_death_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "limit",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "title": "Limit"
-                }
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/github/accident/itic-top200-all-road": {
-        "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Geojson From Github Select Id",
-            "description": "Endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
-            "operationId": "geojson_from_github_select_id_api_v1_github_accident_itic_top200_all_road_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "no",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "integer"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "title": "No"
-                }
-            },
-            {
-                "name": "gid",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "integer"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "title": "Gid"
-                }
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/github/accident/data/select": {
-        "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Github Selects Data Endpoint",
-            "description": "จุดสิ้นสุดนี้เป็นการรับข้อมูล **GEOJSON** มาจาก **GITHUB** โดยสามารถเลือกไฟล์ที่จะเปิดจากพารามิเตอร์ **file** data_(select one number 0-9)",
-            "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "file",
-                "in": "query",
-                "required": true,
-                "schema": {
-                "type": "string",
-                "description": "Name of the GeoJSON file",
-                "title": "File"
-                },
-                "description": "Name of the GeoJSON file"
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/pgDBs/places/th": {
-        "get": {
-            "tags": [
-            "postgres"
-            ],
-            "summary": "Get Places",
-            "description": "Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0\n- **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง\n- **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร",
-            "operationId": "get_places_api_v1_pgDBs_places_th_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "limit",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Number of records to retrieve",
-                "default": 10,
-                "title": "Limit"
-                },
-                "description": "Number of records to retrieve"
-            },
-            {
-                "name": "offset",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 0,
-                "description": "Number of records to skip",
-                "default": 0,
-                "title": "Offset"
-                },
-                "description": "Number of records to skip"
-            },
-            {
-                "name": "lat",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "number"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "description": "Latitude of the user",
-                "title": "Lat"
-                },
-                "description": "Latitude of the user"
-            },
-            {
-                "name": "lon",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "number"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "description": "Longitude of the user",
-                "title": "Lon"
-                },
-                "description": "Longitude of the user"
-            },
-            {
-                "name": "radius",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Search radius in meters",
-                "default": 500,
-                "title": "Radius"
-                },
-                "description": "Search radius in meters"
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        },
-        "post": {
-            "tags": [
-            "postgres"
-            ],
-            "summary": "Import Places",
-            "description": "Endpoint เป็นการอ่านไฟล์ **.parquet** เเลัวทำการบันทึกข้อมูลลงตาราง **places_th**",
-            "operationId": "import_places_api_v1_pgDBs_places_th_post",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/pgDBs/places/th/hexagon": {
-        "get": {
-            "tags": [
-            "postgres"
-            ],
-            "summary": "Get Places",
-            "description": "Endpoint นี้เป็นการเรียกข้อมูลจากตารางชื่อ **places_h3_lv6** มาเเสดง\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0",
-            "operationId": "get_places_api_v1_pgDBs_places_th_hexagon_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "limit",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "description": "Number of records to retrieve",
-                "default": 10,
-                "title": "Limit"
-                },
-                "description": "Number of records to retrieve"
-            },
-            {
-                "name": "offset",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 0,
-                "description": "Number of records to skip",
-                "default": 0,
-                "title": "Offset"
-                },
-                "description": "Number of records to skip"
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/pgDBs/export_geojson": {
-        "get": {
-            "tags": [
-            "postgres"
-            ],
-            "summary": "Export Geojson",
-            "description": "Endpoint เป็นการอ่านข้อมูลฝนตาราง **places_th** จากนั้นทำการบันทึกเป็ฯไฟล์ **Geojson**",
-            "operationId": "export_geojson_api_v1_pgDBs_export_geojson_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        },
-        "/api/v1/pgDBs/places/th/imhexagon": {
-        "get": {
-            "tags": [
-            "postgres"
-            ],
-            "summary": "Convert Geojson To H3",
-            "description": "Endpoint เป็นการอ่านข้อมูลในไฟล์ **Geojson** เเล้วเเปลงเป็ฯ **H3** **level** **6** จากนั้นบันทึกลงตาราง **places_h3_lv6**",
-            "operationId": "convert_geojson_to_h3_api_v1_pgDBs_places_th_imhexagon_get",
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            }
-            },
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ]
-        }
-        }
+      }
     },
+    "/api/v1": {
+      "get": {
+        "tags": [
+          "Docs"
+        ],
+        "summary": "Message",
+        "description": "Test that the domain is valid and the endpoint is working.",
+        "operationId": "message_api_v1_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chalo-docs": {
+      "get": {
+        "tags": [
+          "Docs"
+        ],
+        "summary": "Read Docs",
+        "description": "The document describes information about Chalo.com APIs, including how to access data, usage, and related details.",
+        "operationId": "read_docs_chalo_docs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chalo-api.json": {
+      "get": {
+        "tags": [
+          "Docs"
+        ],
+        "summary": "Custom Docs",
+        "operationId": "custom_docs_chalo_api_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Create Token",
+        "operationId": "create_token_api_v1_token_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/protected": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Protected Route",
+        "description": "- ถ้าไม่ใส่โทเค็น เเล้วส่งคำขอเลยจะได้ **403**\n- ถ้าใส่โทเค็นผิด เเล้วส่งคำขอจะได้ **401** \n- ถ้าใส่โทเค็นถูก เเล้วส่งคำขอจะได้ **200** กับ **500**",
+        "operationId": "protected_route_api_v1_protected_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/github/accident/heatmap-rvp-death": {
+      "get": {
+        "tags": [
+          "Github"
+        ],
+        "summary": "Geojson From Github Heatmap Rvp Death",
+        "description": "Endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
+        "operationId": "geojson_from_github_heatmap_rvp_death_api_v1_github_accident_heatmap_rvp_death_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/github/accident/itic-top200-all-road": {
+      "get": {
+        "tags": [
+          "Github"
+        ],
+        "summary": "Geojson From Github Select Id",
+        "description": "Endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
+        "operationId": "geojson_from_github_select_id_api_v1_github_accident_itic_top200_all_road_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "No"
+            }
+          },
+          {
+            "name": "gid",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Gid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/github/accident/data/select": {
+      "get": {
+        "tags": [
+          "Github"
+        ],
+        "summary": "Github Selects Data Endpoint",
+        "description": "จุดสิ้นสุดนี้เป็นการรับข้อมูล **GEOJSON** มาจาก **GITHUB** โดยสามารถเลือกไฟล์ที่จะเปิดจากพารามิเตอร์ **file** data_(select one number 0-9)",
+        "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Name of the GeoJSON file",
+              "title": "File"
+            },
+            "description": "Name of the GeoJSON file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pgDBs/places/th": {
+      "get": {
+        "tags": [
+          "postgres"
+        ],
+        "summary": "Get Places",
+        "description": "Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0\n- **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง\n- **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร",
+        "operationId": "get_places_api_v1_pgDBs_places_th_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of records to retrieve",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Number of records to retrieve"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Latitude of the user",
+              "title": "Lat"
+            },
+            "description": "Latitude of the user"
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Longitude of the user",
+              "title": "Lon"
+            },
+            "description": "Longitude of the user"
+          },
+          {
+            "name": "radius",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Search radius in meters",
+              "default": 500,
+              "title": "Radius"
+            },
+            "description": "Search radius in meters"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "postgres"
+        ],
+        "summary": "Import Places",
+        "description": "Endpoint เป็นการอ่านไฟล์ **.parquet** เเลัวทำการบันทึกข้อมูลลงตาราง **places_th**",
+        "operationId": "import_places_api_v1_pgDBs_places_th_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pgDBs/places/th/hexagon": {
+      "get": {
+        "tags": [
+          "postgres"
+        ],
+        "summary": "Get Places",
+        "description": "Endpoint นี้เป็นการเรียกข้อมูลจากตารางชื่อ **places_h3_lv6** มาเเสดง\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0",
+        "operationId": "get_places_api_v1_pgDBs_places_th_hexagon_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of records to retrieve",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Number of records to retrieve"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of records to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
     "components": {
         "schemas": {
             "HTTPValidationError": {

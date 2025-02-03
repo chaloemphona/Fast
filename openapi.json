@@ -176,14 +176,14 @@
         ]
       }
     },
-    "/api/v1/duckDBs/places/th/region/hexagon": {
+    "/api/v1/pgDBs/places/th/hexagon": {
       "get": {
         "tags": [
           "H3"
         ],
-        "summary": "Convert Geojson To H3",
+        "summary": "Convert Gpdbs To H3",
         "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
-        "operationId": "convert_geojson_to_h3_api_v1_duckDBs_places_th_region_hexagon_get",
+        "operationId": "convert_gpdbs_to_h3_api_v1_pgDBs_places_th_hexagon_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -517,14 +517,14 @@
         }
       }
     },
-    "/api/v1/pgDBs/places/th/hexagon": {
+    "/api/v1/pgDBs/places/th/hexagon-lv6": {
       "get": {
         "tags": [
           "postgres"
         ],
         "summary": "Get Places",
         "description": "Endpoint นี้เป็นการเรียกข้อมูลจากตารางชื่อ **places_h3_lv6** มาเเสดง\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0",
-        "operationId": "get_places_api_v1_pgDBs_places_th_hexagon_get",
+        "operationId": "get_places_api_v1_pgDBs_places_th_hexagon_lv6_get",
         "security": [
           {
             "HTTPBearer": []

@@ -402,88 +402,87 @@ async def protected_route(
 
     
 
-# @app.get("/api/v1/duckDBs/places/th/region/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
-# def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
-#     """
-#     API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
-#     """
-#     token = credentials.credentials  
-#     if token not in tokens:
-#         raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
-#     token_data = tokens[token]
-#     if datetime.utcnow() > token_data["expiration_time"]:
-#         del tokens[token]
-#         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+@app.get("/api/v1/duckDBs/places/th/region/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
+def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
+    """
+    API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
+    """
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
     
     
-#     authorization_header = request.headers.get('Authorization')
-#     if not authorization_header:
-#         raise HTTPException(status_code=401, detail="Error 401 Missing or invalid Authorization token.")
-#     token = authorization_header.split(" ")[1]  
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        raise HTTPException(status_code=401, detail="Error 401 Missing or invalid Authorization token.")
+    token = authorization_header.split(" ")[1]  
     
-#     headers = {
-#         "Authorization": f"Bearer {token}",
-#         "Content-Type": "application/json",
-#         "ngrok-skip-browser-warning": "skip-browser-warning"
-#     }
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "skip-browser-warning"
+    }
     
-#     response = requests.get("http://192.168.10.166:8000/api/v1/duckDBs/places/th/region?limit=260000", headers=headers)
+    response = requests.get("http://192.168.10.166:8000/api/v1/pgDBs/places/th?limit=40000", headers=headers)
     
-#     geojson_data = response.json()
-#     if geojson_data.get("status") != "success":
-#         return {"status": "error", "message": "Failed to fetch data"}
+    geojson_data = response.json()
+    if geojson_data.get("status") != "success":
+        return {"status": "error", "message": "Failed to fetch data"}
     
-#     features = geojson_data["data"]["features"]
-#     h3_counts = {}
+    features = geojson_data["data"]["features"]
+    h3_counts = {}
 
-#     for feature in features:
-#         geometry = feature.get("geometry")
-#         if geometry and geometry.get("type") == "Point":
-#             coordinates = geometry.get("coordinates")
-#             if coordinates and len(coordinates) == 2:
-#                 lon, lat = coordinates
-#                 if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
-#                     h3_index = h3.geo_to_h3(lat, lon, 6)
-#                     if h3_index in h3_counts:
-#                         h3_counts[h3_index] += 1
-#                     else:
-#                         h3_counts[h3_index] = 1
-#                 else:
-#                     print(f"Skipping invalid coordinates: {coordinates}")
-#             else:
-#                 print(f"Skipping malformed coordinates: {coordinates}")
-#         else:
-#             print(f"Skipping feature with invalid geometry: {geometry}")
+    for feature in features:
+        geometry = feature.get("geometry")
+        if geometry and geometry.get("type") == "Point":
+            coordinates = geometry.get("coordinates")
+            if coordinates and len(coordinates) == 2:
+                lon, lat = coordinates
+                if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
+                    h3_index = h3.geo_to_h3(lat, lon, 6)
+                    if h3_index in h3_counts:
+                        h3_counts[h3_index] += 1
+                    else:
+                        h3_counts[h3_index] = 1
+                else:
+                    print(f"Skipping invalid coordinates: {coordinates}")
+            else:
+                print(f"Skipping malformed coordinates: {coordinates}")
+        else:
+            print(f"Skipping feature with invalid geometry: {geometry}")
     
-#     h3_features = []
-#     for h3_index, count in h3_counts.items():
-#         polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
-#         h3_features.append({
-#             "type": "Feature",
-#             "properties": {
-#                 "h3_index": h3_index,
-#                 "point_count": count
-#             },
-#             "geometry": {
-#                 "type": "Polygon",
-#                 "coordinates": [polygon_coords]
-#             }
-#         })
-#     result_geojson = {
-#         "type": "FeatureCollection",
-#         "features": h3_features
-#     }
-#     metadata = {
-#         "total_H3": len(h3_features),
-#         "data for ": {token_data['username']}
-#     }
-#     return {
-#         "status": "success",
-#         "message": "Data converted to H3 successfully",
-#         "data": result_geojson,
-#         "metadata": metadata
-#     }
-
+    h3_features = []
+    for h3_index, count in h3_counts.items():
+        polygon_coords = h3.h3_to_geo_boundary(h3_index, geo_json=True)
+        h3_features.append({
+            "type": "Feature",
+            "properties": {
+                "h3_index": h3_index,
+                "point_count": count
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [polygon_coords]
+            }
+        })
+    result_geojson = {
+        "type": "FeatureCollection",
+        "features": h3_features
+    }
+    metadata = {
+        "total_H3": len(h3_features),
+        "data for ": {token_data['username']}
+    }
+    return {
+        "status": "success",
+        "message": "Data converted to H3 successfully",
+        "data": result_geojson,
+        "metadata": metadata
+    }
 
 
 
@@ -788,17 +787,19 @@ def fsqBB_to_dict(obj):
 @app.get("/api/v1/pgDBs/places/th", status_code=200, response_model=StandardResponse, tags=["postgres"])
 async def get_places(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    limit: int = Query(10, description="Number of records to retrieve", ge=1),
+    limit: int = Query(1000, description="Number of records to retrieve", ge=1),
     offset: int = Query(0, description="Number of records to skip", ge=0),
     lat: Optional[float] = Query(None, description="Latitude of the user"),
     lon: Optional[float] = Query(None, description="Longitude of the user"),
-    radius: int = Query(500, description="Search radius in meters", ge=1)
+    # radius: int = Query(500, description="Search radius in meters", ge=1),
+    region: Optional[str] = Query(None, description="Region to filter results")
 ):
-    """Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด
+    """Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด พร้อมตัวกรอง region
     - **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1
     - **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0
     - **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง
     - **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร
+    - **region** ค้นหาเฉพาะสถานที่ใน region ที่กำหนด
     """
     
     token = credentials.credentials  
@@ -823,32 +824,27 @@ async def get_places(
                 Place001.geometry
             ).limit(limit).offset(offset)
 
-            if lat is not None and lon is not None:
-                query = select(
-                    Place001.id, 
-                    Place001.fsq_place_id, 
-                    Place001.name, 
-                    Place001.address, 
-                    Place001.latitude,
-                    Place001.longitude,
-                    Place001.region, 
-                    Place001.country, 
-                    Place001.geometry
-                ).where(
-                    text(f"""
-                        ST_DWithin(
-                            geometry::geography,
-                            ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
-                            :radius
-                        )
-                    """)
-                ).params(lon=lon, lat=lat, radius=radius).limit(limit).offset(offset)
+            # กรองตาม region
+            if region:
+                query = query.where(Place001.region == region)
+
+            # กรองตามระยะทาง
+            # if lat is not None and lon is not None:
+            #     query = query.where(
+            #         text(f"""
+            #             ST_DWithin(
+            #                 geometry::geography,
+            #                 ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
+            #                 :radius
+            #             )
+            #         """)
+            #     ).params(lon=lon, lat=lat, radius=radius)  
 
             result = await session.execute(query)
             places = result.all()
 
             if not places:
-                raise HTTPException(status_code=404, detail="404 No places found within the specified radius")
+                raise HTTPException(status_code=404, detail="404 No places found within the specified radius or region")
 
             features = []
             for place in places:
@@ -884,6 +880,10 @@ async def get_places(
                         "coordinates": [lon, lat]
                     }
                 })
+            geojson = {
+            "type": "FeatureCollection",
+            "features": features
+            }
 
             total_count_result = await session.execute(select(func.count()).select_from(Place001))
             total_count = total_count_result.scalar()
@@ -891,12 +891,13 @@ async def get_places(
             return StandardResponse(
                 status="success",
                 message="Data retrieved successfully",
-                data=features,
+                data=geojson,
                 metadata={
                     "total_count": total_count,
                     "limit": limit,
                     "offset": offset,
-                    "radius": radius
+                    # "radius": radius,
+                    "region": region
                 }
             )
     except HTTPException as e:

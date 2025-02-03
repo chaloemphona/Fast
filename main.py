@@ -427,7 +427,7 @@ def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCreden
         "ngrok-skip-browser-warning": "skip-browser-warning"
     }
     
-    response = requests.get("http://192.168.10.166:8000/api/v1/pgDBs/places/th?limit=40000", headers=headers)
+    response = requests.get("https://fast-w9y8.onrender.com/api/v1/pgDBs/places/th?limit=40000", headers=headers)
     
     geojson_data = response.json()
     if geojson_data.get("status") != "success":

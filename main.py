@@ -928,7 +928,7 @@ class StandardResponse(BaseModel):
     data: Optional[Any] = None
     metadata: Optional[dict] = None 
 
-@app.get("/api/v1/pgDBs/places/th/hexagon", status_code=200, response_model=StandardResponse, tags=["postgres"])
+@app.get("/api/v1/pgDBs/places/th/hexagon-lv6", status_code=200, response_model=StandardResponse, tags=["postgres"])
 async def get_places(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     limit: int = Query(10, description="Number of records to retrieve", ge=1),

@@ -402,8 +402,8 @@ async def protected_route(
 
     
 
-@app.get("/api/v1/duckDBs/places/th/region/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
-def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
+@app.get("/api/v1/pgDBs/places/th/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
+def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
     """
     API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
     """

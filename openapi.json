@@ -178,9 +178,6 @@
     },
     "/api/v1/pgDBs/places/th/hexagon": {
       "get": {
-        "tags": [
-          "H3"
-        ],
         "summary": "Convert Gpdbs To H3",
         "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
         "operationId": "convert_gpdbs_to_h3_api_v1_pgDBs_places_th_hexagon_get",
@@ -190,7 +187,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StandardResponse"
+
                 }
               }
             }

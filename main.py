@@ -443,7 +443,7 @@ def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCreden
             if coordinates and len(coordinates) == 2:
                 lon, lat = coordinates
                 if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
-                    h3_index = h3.geo_to_h3(lat, lon, 6)
+                    h3_index = h3.latlng_to_cell(lat, lon, 6)
                     if h3_index in h3_counts:
                         h3_counts[h3_index] += 1
                     else:
@@ -1219,7 +1219,7 @@ async def import_places(credentials: HTTPAuthorizationCredentials = Depends(secu
 #             if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
 #                 continue 
 #             try:
-#                 h3_index = h3.geo_to_h3(lat, lon, 6)
+#                 h3_index = h3.latlng_to_cell(lat, lon, 6)
 #                 if h3_index in h3_counts:
 #                     h3_counts[h3_index] += 1
 #                 else:

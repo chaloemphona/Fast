@@ -457,7 +457,7 @@ def convert_geojson_to_h3(request: Request, credentials: HTTPAuthorizationCreden
     
     h3_features = []
     for h3_index, count in h3_counts.items():
-        polygon_coords = h3.cell_to_boundary(h3_index, geo_json=True)
+        polygon_coords = h3.cell_to_boundary(h3_index)
         h3_features.append({
             "type": "Feature",
             "properties": {
@@ -1229,7 +1229,7 @@ async def import_places(credentials: HTTPAuthorizationCredentials = Depends(secu
 #         async with SessionLocal() as session:
 #             async with session.begin():
 #                 for h3_index, count in h3_counts.items():
-#                     polygon_coords = h3.cell_to_boundary(h3_index, geo_json=True)
+#                     polygon_coords = h3.cell_to_boundary(h3_index)
 #                     polygon_wkt = f"POLYGON(({','.join(f'{lon} {lat}' for lon, lat in polygon_coords)}))"
 #                     insert_query = text("""
 #                         INSERT INTO places_h3_lv6 (h3_index, point_count, geometry)
@@ -1242,7 +1242,7 @@ async def import_places(credentials: HTTPAuthorizationCredentials = Depends(secu
 #                     })
 #         h3_features = []
 #         for h3_index, count in h3_counts.items():
-#             polygon_coords = h3.cell_to_boundary(h3_index, geo_json=True)
+#             polygon_coords = h3.cell_to_boundary(h3_index)
 #             h3_features.append({
 #                 "type": "Feature",
 #                 "properties": {

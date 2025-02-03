@@ -176,6 +176,33 @@
         ]
       }
     },
+    "/api/v1/duckDBs/places/th/region/hexagon": {
+      "get": {
+        "tags": [
+          "H3"
+        ],
+        "summary": "Convert Geojson To H3",
+        "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
+        "operationId": "convert_geojson_to_h3_api_v1_duckDBs_places_th_region_hexagon_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/github/accident/heatmap-rvp-death": {
       "get": {
         "tags": [
@@ -352,7 +379,7 @@
           "postgres"
         ],
         "summary": "Get Places",
-        "description": "Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0\n- **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง\n- **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร",
+        "description": "Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด พร้อมตัวกรอง region\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0\n- **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง\n- **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร\n- **region** ค้นหาเฉพาะสถานที่ใน region ที่กำหนด",
         "operationId": "get_places_api_v1_pgDBs_places_th_get",
         "security": [
           {
@@ -368,7 +395,7 @@
               "type": "integer",
               "minimum": 1,
               "description": "Number of records to retrieve",
-              "default": 10,
+              "default": 1000,
               "title": "Limit"
             },
             "description": "Number of records to retrieve"
@@ -423,17 +450,22 @@
             "description": "Longitude of the user"
           },
           {
-            "name": "radius",
+            "name": "region",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Search radius in meters",
-              "default": 500,
-              "title": "Radius"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Region to filter results",
+              "title": "Region"
             },
-            "description": "Search radius in meters"
+            "description": "Region to filter results"
           }
         ],
         "responses": {

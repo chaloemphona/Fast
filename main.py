@@ -402,8 +402,8 @@ async def protected_route(
 
     
 
-@app.get("/api/v1/pgDBs/places/th/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
-def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security),):
+@app.get("/api/v1/pgDBs/places/th/hexagon")
+def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
     """
@@ -414,7 +414,6 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
     if datetime.utcnow() > token_data["expiration_time"]:
         del tokens[token]
         raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
-    
     
     authorization_header = request.headers.get('Authorization')
     if not authorization_header:
@@ -441,13 +440,10 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
         if geometry and geometry.get("type") == "Point":
             coordinates = geometry.get("coordinates")
             if coordinates and len(coordinates) == 2:
-                lon, lat = coordinates
+                lon, lat = coordinates  # GeoJSON ใช้ [lon, lat]
                 if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
-                    h3_index = h3.latlng_to_cell(lat, lon, 6)
-                    if h3_index in h3_counts:
-                        h3_counts[h3_index] += 1
-                    else:
-                        h3_counts[h3_index] = 1
+                    h3_index = h3.latlng_to_cell(lat, lon, 6)  # H3 ใช้ (lat, lon)
+                    h3_counts[h3_index] = h3_counts.get(h3_index, 0) + 1
                 else:
                     print(f"Skipping invalid coordinates: {coordinates}")
             else:
@@ -457,7 +453,15 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
     
     h3_features = []
     for h3_index, count in h3_counts.items():
-        polygon_coords = h3.cell_to_boundary(h3_index)
+        polygon_coords = h3.cell_to_boundary(h3_index)  # ค่าที่ได้เป็น (lat, lon)
+
+        # สลับให้เป็น (lon, lat) ตามมาตรฐาน GeoJSON
+        geojson_coords = [[lon, lat] for lat, lon in polygon_coords]
+
+        # ปิด Polygon โดยเพิ่มจุดแรกเป็นจุดสุดท้าย
+        if geojson_coords and geojson_coords[0] != geojson_coords[-1]:
+            geojson_coords.append(geojson_coords[0])
+
         h3_features.append({
             "type": "Feature",
             "properties": {
@@ -466,16 +470,17 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
             },
             "geometry": {
                 "type": "Polygon",
-                "coordinates": [polygon_coords]
+                "coordinates": [geojson_coords]
             }
         })
+    
     result_geojson = {
         "type": "FeatureCollection",
         "features": h3_features
     }
     metadata = {
         "total_H3": len(h3_features),
-        "data for ": {token_data['username']}
+        "data for": token_data['username']
     }
     return {
         "status": "success",
@@ -483,6 +488,7 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
         "data": result_geojson,
         "metadata": metadata
     }
+
 
 
 

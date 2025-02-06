@@ -437,7 +437,7 @@ async def protected_route(
 
     
 
-@app.get("/api/v1/pgDBs/places/th/hexagon")
+@app.get("/api/v1/pgDBs/places/th/hexagon", response_model=StandardResponse, status_code=200, tags=["H3"])
 def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     API region fetches data from the **DuckDB** service and converts the region data into **H3** format.
@@ -461,7 +461,7 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
         "ngrok-skip-browser-warning": "skip-browser-warning"
     }
     
-    response = requests.get("https://fast-w9y8.onrender.com/api/v1/pgDBs/places/th?limit=80000", headers=headers)
+    response = requests.get("https://fast-w9y8.onrender.com/api/v1/pgDBs/places/th?limit=6000", headers=headers)
     
     geojson_data = response.json()
     if geojson_data.get("status") != "success":
@@ -823,12 +823,12 @@ async def get_places(
                 }
                 features.append({
                     "type": "Feature",
-                    "properties": {
-                        key: value for key, value in place_data.items() if key not in ["latitude", "longitude"]
-                    },
                     "geometry": {
                         "type": "Point",
                         "coordinates": [lon, lat]
+                    },
+                    "properties": {
+                        key: value for key, value in place_data.items() if key not in ["latitude", "longitude"]
                     }
                 })
             geojson = {

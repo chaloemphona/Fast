@@ -16,3 +16,7 @@ asyncpg
 aiofiles
 psycopg2-binary
 httpx
+pydantic
+shapely
+psycopg2
+gunicorn

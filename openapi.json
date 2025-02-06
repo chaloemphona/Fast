@@ -178,6 +178,9 @@
     },
     "/api/v1/pgDBs/places/th/hexagon": {
       "get": {
+        "tags": [
+          "H3"
+        ],
         "summary": "Convert Gpdbs To H3",
         "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
         "operationId": "convert_gpdbs_to_h3_api_v1_pgDBs_places_th_hexagon_get",
@@ -187,7 +190,7 @@
             "content": {
               "application/json": {
                 "schema": {
-
+                  "$ref": "#/components/schemas/StandardResponse"
                 }
               }
             }
@@ -553,6 +556,203 @@
               "title": "Offset"
             },
             "description": "Number of records to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opendeve/places/hospi": {
+      "get": {
+        "tags": [
+          "opendevelopmentmekong"
+        ],
+        "summary": "Get Hospital",
+        "description": "API ดึงข้อมูลโดยกำหนดจำนวน limit ตามที่ผู้ใช้ระบุ (ค่าเริ่มต้น = 10)\n- limit: จำนวนเรคคอร์ดที่ต้องการดึง (ค่าขั้นต่ำ 1, ค่าสูงสุด 1000)",
+        "operationId": "get_hospital_api_v1_opendeve_places_hospi_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opendeve/places/excise_department": {
+      "get": {
+        "tags": [
+          "opendevelopmentmekong"
+        ],
+        "summary": "Get Excise Department",
+        "operationId": "get_excise_department_api_v1_opendeve_places_excise_department_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opendeve/places/reservoir": {
+      "get": {
+        "tags": [
+          "opendevelopmentmekong"
+        ],
+        "summary": "Get Reservoir",
+        "operationId": "get_reservoir_api_v1_opendeve_places_reservoir_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/opendeve/places/well_water": {
+      "get": {
+        "tags": [
+          "opendevelopmentmekong"
+        ],
+        "summary": "Get Well Water",
+        "operationId": "get_well_water_api_v1_opendeve_places_well_water_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
           }
         ],
         "responses": {

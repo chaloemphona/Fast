@@ -443,7 +443,7 @@
     "/api/v1/pgDBs/places/th/hexagon": {
         "get": {
             "tags": [
-            "H3"
+            "postgres"
             ],
             "summary": "Convert Geojson To H3",
             "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",

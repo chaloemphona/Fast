@@ -1463,6 +1463,247 @@ def get_well_water(
         return {"error": "Failed to fetch data", "status_code": response.status_code}
 
 
+@app.get("/api/v1/opendeve/places/hospi", status_code=200, response_model=StandardResponse, tags=["opendevelopmentmekong"])
+def get_hospital(
+    limit: int = Query(10, ge=1),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):  
+    """
+    API ดึงข้อมูลโดยกำหนดจำนวน limit ตามที่ผู้ใช้ระบุ (ค่าเริ่มต้น = 10)
+    - limit: จำนวนเรคคอร์ดที่ต้องการดึง (ค่าขั้นต่ำ 1, ค่าสูงสุด 1000)
+    """
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+
+    API_URL = "https://data.thailand.opendevelopmentmekong.net/th/api/3/action/datastore_search?resource_id=cfe757fb-69b6-4f82-92cd-e5dfca865eb5"
+    params = {"limit": limit}
+    response = requests.get(API_URL, params=params)
+
+    if response.status_code == 200:
+        result = response.json().get("result", {})
+
+        geojson_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [rec.get("Long"), rec.get("Lat")]
+                    },
+                    "properties": {
+                        "_id": rec.get("_id"),
+                        "ID": rec.get("ID"),
+                        "Ministry": rec.get("Ministry"),
+                        "Department": rec.get("Department"),
+                        "Agency": rec.get("Agency"),
+                        "Address": rec.get("Address")
+                    }
+                } for rec in result.get("records", [])
+            ]
+        }
+
+        hapi_all = result.get("total", 0)
+        hapi_count = len(geojson_data["features"])
+
+        return {
+            "status": "success",
+            "message": "GeoJSON file fetched successfully",
+            "data": geojson_data,
+            "metadata": {"feature_count": hapi_count, "total": hapi_all}
+        }
+    else:
+        return {"error": "Failed to fetch data", "status_code": response.status_code}
+
+
+
+
+
+
+@app.get("/api/v1/opendeve/places/excise_department", status_code=200, response_model=StandardResponse, tags=["opendevelopmentmekong"])
+def get_excise_department(
+    limit: int = Query(10, ge=1),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):  
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+
+    API_URL = "https://catalog.excise.go.th/api/3/action/datastore_search?resource_id=e9afa2fa-dc06-49ad-88bd-f16fe9b7efd9"
+    params = {"limit": limit}
+    response = requests.get(API_URL,params=params)
+
+    if response.status_code == 200:
+        result = response.json().get("result", {})
+
+        geojson_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [rec.get("BRANCH_LONG"), rec.get("BRANCH_LAT")]
+                    },
+                    "properties": {
+                       "_id": rec.get("_id"),
+                        "OFFCODE": rec.get("OFFCODE"),
+                        "OFFNAME": rec.get("OFFNAME"),
+                        "Department": rec.get("Department"),
+                        "RESPONSE_DESC": rec.get("RESPONSE_DESC"),
+                        "WEB_URL": rec.get("WEB_URL"),
+                        "PROVINCE_NAME": rec.get("PROVINCE_NAME"),
+                        "REGION": rec.get("REGION"),
+                        "BRANCH_ADDRESS": rec.get("BRANCH_ADDRESS"),
+                    }
+                } for rec in result.get("records", [])
+            ]
+        }
+
+        excise_all = result.get("total", 0)
+        excise_count = len(geojson_data["features"])
+
+        return {
+            "status": "success",
+            "message": "GeoJSON file fetched successfully",
+            "data": geojson_data,
+            "metadata": {"feature_count": excise_count, "total": excise_all}
+        }
+    else:
+        return {"error": "Failed to fetch data", "status_code": response.status_code}
+
+
+
+
+
+@app.get("/api/v1/opendeve/places/reservoir", status_code=200, response_model=StandardResponse, tags=["opendevelopmentmekong"])
+def get_reservoir(
+    limit: int = Query(10, ge=1),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):  
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+
+    API_URL = "https://gdcatalog.go.th/api/3/action/datastore_search?resource_id=668a16eb-f479-48f4-a737-91870efbf95e"
+    params = {"limit": limit}
+    response = requests.get(API_URL,params=params)
+
+    if response.status_code == 200:
+        result = response.json().get("result", {})
+
+        geojson_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [rec.get("Longitude"), rec.get("Latitude")]
+                    },
+                    "properties": {
+                        "_id": rec.get("_id"),
+                        "province": rec.get("จังหวัด"),
+                        "district": rec.get("อำเภอ"),
+                        "subdistrict": rec.get("ตำบล"),
+                        "reservoir": rec.get("อ่างเก็บน้ำ"),
+                        "size reservoir": rec.get("ขนาดอ่างเก็บน้ำ"),
+                    }
+                } for rec in result.get("records", [])
+            ]
+        }
+
+        reservoir_all = result.get("total", 0)
+        reservoir_count = len(geojson_data["features"])
+
+        return {
+            "status": "success",
+            "message": "GeoJSON file fetched successfully",
+            "data": geojson_data,
+            "metadata": {"feature_count": reservoir_count, "total": reservoir_all}
+        }
+    else:
+        return {"error": "Failed to fetch data", "status_code": response.status_code}
+
+
+
+
+
+@app.get("/api/v1/opendeve/places/well_water", status_code=200, response_model=StandardResponse, tags=["opendevelopmentmekong"])
+def get_well_water(
+    limit: int = Query(10, ge=1),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):  
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+
+    API_URL = "https://gdcatalog.go.th/api/3/action/datastore_search?resource_id=654585d7-e892-47d4-bf3d-62a76e440fc0"
+    params = {"limit": limit}
+    response = requests.get(API_URL,params=params)
+
+    if response.status_code == 200:
+        result = response.json().get("result", {})
+
+        geojson_data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [rec.get("Longitude"), rec.get("Latitude")]
+                    },
+                    "properties": {
+                        "_id": rec.get("_id"),
+                        "province": rec.get("ชื่อจังหวัด"),
+                        "district": rec.get("ชื่ออำเภอ"),
+                        "subdistrict": rec.get("ชื่อตำบล"),
+                        "village no.": rec.get("หมู่ที่"),
+                        "name village": rec.get("ชื่อหมู่บ้าน"),
+                        "well number": rec.get("หมายเลขบ่อ"),
+                        "well type": rec.get("ประเภทบ่อ"),
+                        "depth": rec.get("ความลึกเจาะ"),
+                        "evo depth": rec.get("ความลึกพัฒนา"),
+                        "water volime": rec.get("ปริมาณน้ำ (ลบ.ม./ชม.)"),
+                        "water level": rec.get("ระดับน้ำปกติ (เมตร)"),
+                        "water receding": rec.get("ระยะน้ำลด (เมตร)"),
+                    }
+                } for rec in result.get("records", [])
+            ]
+        }
+
+        reservoir_all = result.get("total", 0)
+        reservoir_count = len(geojson_data["features"])
+
+        return {
+            "status": "success",
+            "message": "GeoJSON file fetched successfully",
+            "data": geojson_data,
+            "metadata": {"feature_count": reservoir_count, "total": reservoir_all}
+        }
+    else:
+        return {"error": "Failed to fetch data", "status_code": response.status_code}
+
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))  # Use Render's PORT

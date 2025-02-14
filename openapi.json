@@ -12,7 +12,7 @@
     },
     "servers": [
     {
-        "url": "chalo.click",
+        "url": "https://chalo.click",
         "description": "Chalo API"
     },
     {

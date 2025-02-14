@@ -461,7 +461,7 @@ def convert_gpdbs_to_h3(request: Request, credentials: HTTPAuthorizationCredenti
         "ngrok-skip-browser-warning": "skip-browser-warning"
     }
     
-    response = requests.get("https://fast-w9y8.onrender.com/api/v1/pgDBs/places/th?limit=6000", headers=headers)
+    response = requests.get("www.chalo.click/api/v1/pgDBs/places/th?limit=6000", headers=headers)
     
     geojson_data = response.json()
     if geojson_data.get("status") != "success":

@@ -136,7 +136,7 @@ security = HTTPBearer()
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello World"}
+    return {"Welcome to the Chalo API. For questions, type /chalo-docs next."}
 
 app.add_middleware(
     CORSMiddleware,

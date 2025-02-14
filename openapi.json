@@ -12,6 +12,10 @@
     },
     "servers": [
     {
+        "url": "www.chalo.click",
+        "description": "Chalo API"
+    },
+    {
         "url": "http://192.168.10.166:8000",
         "description": "Chalo API IP addres"
     },

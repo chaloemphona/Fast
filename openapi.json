@@ -240,7 +240,7 @@
             }
         }
         },
-        "/api/v1/pgDBs/places/th": {
+         "/api/v1/pgDBs/places/th": {
       "get": {
         "tags": [
           "postgres"
@@ -317,6 +317,18 @@
             "description": "Longitude of the user"
           },
           {
+            "name": "radius",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Search radius in meters",
+              "title": "Radius"
+            },
+            "description": "Search radius in meters"
+          },
+          {
             "name": "region",
             "in": "query",
             "required": false,
@@ -363,8 +375,13 @@
           "postgres"
         ],
         "summary": "Import Places",
-        "description": "Endpoint เป็นการอ่านไฟล์ **.parquet** เเลัวทำการบันทึกข้อมูลลงตาราง **places**",
+        "description": "Endpoint เป็นการอ่านไฟล์ **.parquet** เเลัวทำการบันทึกข้อมูลลงตาราง **places_th**",
         "operationId": "import_places_api_v1_pgDBs_places_th_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",

@@ -742,7 +742,7 @@ async def get_places(
     offset: int = Query(0, description="Number of records to skip", ge=0),
     lat: Optional[float] = Query(None, description="Latitude of the user"),
     lon: Optional[float] = Query(None, description="Longitude of the user"),
-    radius: int = Query(500, description="Search radius in meters", ge=1),
+    radius: int = Query(None, description="Search radius in meters", ge=1),
     region: Optional[str] = Query(None, description="Region to filter results")
 ):
     """Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด พร้อมตัวกรอง region

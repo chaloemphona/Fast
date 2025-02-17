@@ -742,7 +742,7 @@ async def get_places(
     offset: int = Query(0, description="Number of records to skip", ge=0),
     lat: Optional[float] = Query(None, description="Latitude of the user"),
     lon: Optional[float] = Query(None, description="Longitude of the user"),
-    # radius: int = Query(500, description="Search radius in meters", ge=1),
+    radius: int = Query(500, description="Search radius in meters", ge=1),
     region: Optional[str] = Query(None, description="Region to filter results")
 ):
     """Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด พร้อมตัวกรอง region
@@ -780,16 +780,16 @@ async def get_places(
                 query = query.where(Place001.region == region)
 
             # กรองตามระยะทาง
-            # if lat is not None and lon is not None:
-            #     query = query.where(
-            #         text(f"""
-            #             ST_DWithin(
-            #                 geometry::geography,
-            #                 ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
-            #                 :radius
-            #             )
-            #         """)
-            #     ).params(lon=lon, lat=lat, radius=radius)  
+            if lat is not None and lon is not None:
+                query = query.where(
+                    text(f"""
+                        ST_DWithin(
+                            geometry::geography,
+                            ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
+                            :radius
+                        )
+                    """)
+                ).params(lon=lon, lat=lat, radius=radius)  
 
             result = await session.execute(query)
             places = result.all()
@@ -847,7 +847,7 @@ async def get_places(
                     "total_count": total_count,
                     "limit": limit,
                     "offset": offset,
-                    # "radius": radius,
+                    "radius": radius,
                     "region": region
                 }
             )

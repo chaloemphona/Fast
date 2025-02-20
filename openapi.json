@@ -491,10 +491,15 @@
     "/api/v1/route_to_place": {
       "get": {
         "tags": [
-            "route"
-            ],
+          "route"
+        ],
         "summary": "Get Route To Place",
         "operationId": "get_route_to_place_api_v1_route_to_place_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "start_lat",

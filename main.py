@@ -1748,8 +1748,9 @@ async def get_db():
     async with SessionLocal() as session:
         yield session
 
-@app.get("/api/v1/route_to_place", status_code=200)
+@app.get("/api/v1/route_to_place", status_code=200, tags=["route"])
 async def get_route_to_place(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     start_lat: Optional[float] = Query(None, description="Latitude จุดเริ่มต้น"),
     start_lon: Optional[float] = Query(None, description="Longitude จุดเริ่มต้น"),
     place_name: Optional[str] = Query(None, description="ชื่อร้านที่ต้องการไป"),
@@ -1757,6 +1758,14 @@ async def get_route_to_place(
     end_lon: Optional[float] = Query(None, description="Longitude ปลายทาง"),
     session: AsyncSession = Depends(get_db),
 ):
+    token = credentials.credentials  
+    if token not in tokens:
+        raise HTTPException(status_code=401, detail="Error 401 Invalid token.")
+    token_data = tokens[token]
+    if datetime.utcnow() > token_data["expiration_time"]:
+        del tokens[token]
+        raise HTTPException(status_code=401, detail="Error 401 Token has expired.")
+        
     if not start_lat or not start_lon:
         raise HTTPException(status_code=400, detail="ต้องระบุพิกัดจุดเริ่มต้น")
 

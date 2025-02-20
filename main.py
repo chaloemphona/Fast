@@ -1745,7 +1745,7 @@ def get_well_water(
 
 GRAPHOPPER_API_KEY = "ec221458-d6a0-4541-8119-225341d4bb20" 
 async def get_db():
-    async with SessionLocal_A() as session:
+    async with SessionLocal() as session:
         yield session
 
 @app.get("/api/v1/route_to_place", status_code=200)

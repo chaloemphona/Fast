@@ -100,6 +100,42 @@ from typing import Optional, Any
 import logging
 import json
 
+from fastapi import FastAPI, File, UploadFile, Query, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+from sqlalchemy.dialects.postgresql import JSONB
+from geoalchemy2 import Geometry
+from pydantic import BaseModel
+from typing import Optional, Any
+import logging
+import json
+from fastapi import FastAPI, Query
+import asyncpg
+import geojson
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import text
+import geojson
+from fastapi import FastAPI, HTTPException
+from sqlalchemy import create_engine, select
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.future import select
+from sqlalchemy import text
+from sqlalchemy.orm import declarative_base
+import asyncpg
+
+from fastapi import FastAPI, HTTPException, Query, Depends
+from typing import Optional
+import requests
+import logging
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import text
+from sqlalchemy import func 
+
 
 class StandardResponse(BaseModel):
     status: str = "success"  
@@ -1701,6 +1737,73 @@ def get_well_water(
         }
     else:
         return {"error": "Failed to fetch data", "status_code": response.status_code}
+
+
+
+
+
+
+GRAPHOPPER_API_KEY = "ec221458-d6a0-4541-8119-225341d4bb20" 
+async def get_db():
+    async with SessionLocal_A() as session:
+        yield session
+
+@app.get("/api/v1/route_to_place", status_code=200)
+async def get_route_to_place(
+    start_lat: Optional[float] = Query(None, description="Latitude จุดเริ่มต้น"),
+    start_lon: Optional[float] = Query(None, description="Longitude จุดเริ่มต้น"),
+    place_name: Optional[str] = Query(None, description="ชื่อร้านที่ต้องการไป"),
+    end_lat: Optional[float] = Query(None, description="Latitude ปลายทาง"),
+    end_lon: Optional[float] = Query(None, description="Longitude ปลายทาง"),
+    session: AsyncSession = Depends(get_db),
+):
+    if not start_lat or not start_lon:
+        raise HTTPException(status_code=400, detail="ต้องระบุพิกัดจุดเริ่มต้น")
+
+    if place_name:
+        query = select(
+            Place001.latitude, Place001.longitude, Place001.name
+        ).where(func.lower(Place001.name).like(f"%{place_name.lower()}%"))
+        
+        result = await session.execute(query)
+        place = result.first()
+        if not place:
+            raise HTTPException(status_code=404, detail="ไม่พบสถานที่ที่ระบุ")
+        end_lat, end_lon = place.latitude, place.longitude
+
+    elif not end_lat or not end_lon:
+        raise HTTPException(status_code=400, detail="ต้องระบุปลายทาง")
+
+    # เรียกใช้ GraphHopper API
+    url = "https://graphhopper.com/api/1/route"
+    params = {
+        "point": [f"{start_lat},{start_lon}", f"{end_lat},{end_lon}"],
+        "profile": "car",
+        "format": "json",
+        "key": GRAPHOPPER_API_KEY,
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Error fetching route")
+
+    route_data = response.json()
+    
+    # ดึงระยะทางจาก API
+    distance_meters = route_data["paths"][0]["distance"]  # ระยะทางเป็นเมตร
+    distance_km = distance_meters / 1000  # แปลงเป็นกิโลเมตร
+
+    return {
+        "status": "success",
+        "message": "Route calculated successfully",
+        "start_location": {"lat": start_lat, "lon": start_lon},
+        "end_location": {"lat": end_lat, "lon": end_lon, "name": place_name},
+        "distance": {
+            "meters": round(distance_meters, 2),
+            "kilometers": round(distance_km, 2),
+        },
+        "route": route_data
+    }
 
 
 

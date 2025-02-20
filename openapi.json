@@ -488,6 +488,129 @@
             ]
         }
     },
+    "/api/v1/route_to_place": {
+      "get": {
+        "tags": [
+            "route"
+            ],
+        "summary": "Get Route To Place",
+        "operationId": "get_route_to_place_api_v1_route_to_place_get",
+        "parameters": [
+          {
+            "name": "start_lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Latitude จุดเริ่มต้น",
+              "title": "Start Lat"
+            },
+            "description": "Latitude จุดเริ่มต้น"
+          },
+          {
+            "name": "start_lon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Longitude จุดเริ่มต้น",
+              "title": "Start Lon"
+            },
+            "description": "Longitude จุดเริ่มต้น"
+          },
+          {
+            "name": "place_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ชื่อร้านที่ต้องการไป",
+              "title": "Place Name"
+            },
+            "description": "ชื่อร้านที่ต้องการไป"
+          },
+          {
+            "name": "end_lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Latitude ปลายทาง",
+              "title": "End Lat"
+            },
+            "description": "Latitude ปลายทาง"
+          },
+          {
+            "name": "end_lon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Longitude ปลายทาง",
+              "title": "End Lon"
+            },
+            "description": "Longitude ปลายทาง"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/opendeve/places/hospi": {
       "get": {
         "tags": [

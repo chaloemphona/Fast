@@ -35,6 +35,7 @@
             "Authentication"
             ],
             "summary": "Create Token",
+            "description": "This endpoint is responsible for creating a token. It receives a string name and returns a token.",
             "operationId": "create_token_api_v1_token_post",
             "requestBody": {
             "content": {
@@ -196,7 +197,7 @@
             "Github"
             ],
             "summary": "Github Selects Data Endpoint",
-            "description": "จุดสิ้นสุดนี้เป็นการรับข้อมูล **GEOJSON** มาจาก **GITHUB** โดยสามารถเลือกไฟล์ที่จะเปิดจากพารามิเตอร์ **file** data_(select one number 0-9)",
+            "description": "Endpoint is to get GEOJSON data from GITHUB, and can select the file to open from the file data_(select one number 0-9) parameter.",
             "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
             "security": [
             {
@@ -246,7 +247,7 @@
           "postgres"
         ],
         "summary": "Get Places",
-        "description": "Endpoint ค้นหาสถานที่รอบตัวฉันภายในรัศมีที่กำหนด พร้อมตัวกรอง region\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0\n- **lat** **lon** พิกัดที่ต้องการเป็นจุดศุนย์กลาง\n- **radius** รัศมีที่ต้องการให้ค้นหารอบตัว หน่วย เมตร\n- **region** ค้นหาเฉพาะสถานที่ใน region ที่กำหนด",
+        "description": "Endpoint Find places around me within a specified radius, with region filter\n- **limit** Limit the data display, start at 1\n- **offset** Start displaying data from the specified value, start at 0\n- **lat** **lon** The desired coordinate as the center point\n- **radius** The radius to search around, in meters\n- **region** Find only places in the specified region",
         "operationId": "get_places_api_v1_pgDBs_places_th_get",
         "security": [
           {
@@ -375,7 +376,7 @@
           "postgres"
         ],
         "summary": "Import Places",
-        "description": "Endpoint เป็นการอ่านไฟล์ **.parquet** เเลัวทำการบันทึกข้อมูลลงตาราง **places_th**",
+        "description": "Endpoint is to read the .parquet file and save the data to the places_th table.**",
         "operationId": "import_places_api_v1_pgDBs_places_th_post",
         "security": [
           {
@@ -402,7 +403,7 @@
           "postgres"
         ],
         "summary": "Get Places",
-        "description": "Endpoint นี้เป็นการเรียกข้อมูลจากตารางชื่อ **places_h3_lv6** มาเเสดง\n- **limit** จำกัดการเเสดงข้อมมูล เริ่มต้นที่ 1\n- **offset** เริ่มเเสดงข้อมูลตั้งเเต่ตัวที่กำหนด เริ่มต้นที่ 0",
+        "description": "This endpoint is to fetch data from the table named places_h3_lv6 to display.\n- **limit** Limits the display of data, starting at 1\n- **offset** Start displaying data from the specified value, starting at 0",
         "operationId": "get_places_api_v1_pgDBs_places_th_hexagon_lv6_get",
         "security": [
           {
@@ -467,7 +468,7 @@
             "postgres"
             ],
             "summary": "Convert Geojson To H3",
-            "description": "API region fetches data from the **DuckDB** service and converts the region data into **H3** format.",
+            "description": "This endpoint will fetch POI data from the cloud database and process it to create a hexagon.",
             "operationId": "convert_geojson_to_h3_api_v1_pgDBs_places_th_hexagon_get",
             "responses": {
             "200": {
@@ -494,6 +495,7 @@
           "route"
         ],
         "summary": "Get Route To Place",
+        "description": "This endpoint is a calculation of the route from the starting point to the destination point. The parameters in the query are as follows:\n- start_lat is to set the Latitude coordinate of the starting point.\n- start_lon is to set the Longitude coordinate of the starting point.\n- end_lat is to set the Latitude coordinate of the starting point.\n- end_lon is to set the Longitude coordinate of the starting point.\n- place_name is to enter the shop name. Then, it will search for the shop name that matches the Cloud database. When it is found, it will take the Latitude and Longitude coordinates of the shop from the database to calculate the route.",
         "operationId": "get_route_to_place_api_v1_route_to_place_get",
         "security": [
           {
@@ -622,7 +624,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Hospital",
-        "description": "API ดึงข้อมูลโดยกำหนดจำนวน limit ตามที่ผู้ใช้ระบุ (ค่าเริ่มต้น = 10)\n- limit: จำนวนเรคคอร์ดที่ต้องการดึง (ค่าขั้นต่ำ 1, ค่าสูงสุด 1000)",
+        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_hospital_api_v1_opendeve_places_hospi_get",
         "security": [
           {
@@ -672,6 +674,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Excise Department",
+        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_excise_department_api_v1_opendeve_places_excise_department_get",
         "security": [
           {
@@ -721,6 +724,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Reservoir",
+        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_reservoir_api_v1_opendeve_places_reservoir_get",
         "security": [
           {
@@ -770,6 +774,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Well Water",
+        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_well_water_api_v1_opendeve_places_well_water_get",
         "security": [
           {

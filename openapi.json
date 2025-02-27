@@ -65,7 +65,7 @@
             "Github"
             ],
             "summary": "Geojson From Github Heatmap Rvp Death",
-            "description": "Endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
+            "description": "This endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
             "operationId": "geojson_from_github_heatmap_rvp_death_api_v1_github_accident_heatmap_rvp_death_get",
             "security": [
             {
@@ -114,7 +114,7 @@
             "Github"
             ],
             "summary": "Geojson From Github Select Id",
-            "description": "Endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
+            "description": "This endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
             "operationId": "geojson_from_github_select_id_api_v1_github_accident_itic_top200_all_road_get",
             "security": [
             {
@@ -185,7 +185,7 @@
             "Github"
             ],
             "summary": "Github Selects Data Endpoint",
-            "description": "Endpoint is to get GEOJSON data from GITHUB, and can select the file to open from the file data_(select one number 0-9) parameter.",
+            "description": "This endpoint is to get GEOJSON data from GITHUB, and can select the file to open from the file data_(select one number 0-9) parameter.",
             "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
             "security": [
             {
@@ -235,7 +235,7 @@
           "postgres"
         ],
         "summary": "Get Places",
-        "description": "Endpoint Find places around me within a specified radius, with region filter\n- **limit** Limit the data display, start at 1\n- **offset** Start displaying data from the specified value, start at 0\n- **lat** **lon** The desired coordinate as the center point\n- **radius** The radius to search around, in meters\n- **region** Find only places in the specified region",
+        "description": "This endpoint Find places around me within a specified radius, with region filter\n- **limit** Limit the data display, start at 1\n- **offset** Start displaying data from the specified value, start at 0\n- **lat** **lon** The desired coordinate as the center point\n- **radius** The radius to search around, in meters\n- **region** Find only places in the specified region",
         "operationId": "get_places_api_v1_pgDBs_places_th_get",
         "security": [
           {
@@ -364,7 +364,7 @@
           "postgres"
         ],
         "summary": "Import Places",
-        "description": "Endpoint is to read the .parquet file and save the data to the places_th table.**",
+        "description": "This endpoint is to read the .parquet file and save the data to the places_th table.**",
         "operationId": "import_places_api_v1_pgDBs_places_th_post",
         "security": [
           {
@@ -612,7 +612,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Hospital",
-        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
+        "description": "This endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_hospital_api_v1_opendeve_places_hospi_get",
         "security": [
           {
@@ -662,7 +662,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Excise Department",
-        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
+        "description": "This endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_excise_department_api_v1_opendeve_places_excise_department_get",
         "security": [
           {
@@ -712,7 +712,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Reservoir",
-        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
+        "description": "This endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_reservoir_api_v1_opendeve_places_reservoir_get",
         "security": [
           {
@@ -762,7 +762,7 @@
           "opendevelopmentmekong"
         ],
         "summary": "Get Well Water",
-        "description": "Endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
+        "description": "This endpoint will fetch data from external data sources that are freely available.\n- **limit**: Number of records to fetch (minimum 1)",
         "operationId": "get_well_water_api_v1_opendeve_places_well_water_get",
         "security": [
           {

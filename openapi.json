@@ -483,7 +483,7 @@
           "route"
         ],
         "summary": "Get Route To Place",
-        "description": "This endpoint is a calculation of the route from the starting point to the destination point. The parameters in the query are as follows:\n- **start_lat** is to set the Latitude coordinate of the starting point.\n- **start_lon** is to set the Longitude coordinate of the starting point.\n- **end_lat** is to set the Latitude coordinate of the starting point.\n- **end_lon** is to set the Longitude coordinate of the starting point.\n- **place_name** is to enter the shop name. Then, it will search for the shop name that matches the Cloud database. When it is found, it will take the Latitude and Longitude coordinates of the shop from the database to calculate the route.",
+        "description": "This endpoint is a calculation of the route from the starting point to the destination point. The parameters in the query are as follows:\n- **start_lat** is to set the Latitude coordinate of the starting point.\n- **start_lon** is to set the Longitude coordinate of the starting point.\n- **end_lat** is to set the Latitude coordinate of the end point.\n- **end_lon** is to set the Longitude coordinate of the end point.\n- **place_name** is to enter the shop name. Then, it will search for the shop name that matches the Cloud database. When it is found, it will take the Latitude and Longitude coordinates of the shop from the database to calculate the route.",
         "operationId": "get_route_to_place_api_v1_route_to_place_get",
         "security": [
           {

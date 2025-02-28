@@ -59,178 +59,8 @@
             }
         }
         },
-        "/api/v1/github/accident/heatmap-rvp-death": {
+        "/api/v1/pgDBs/places/th": {
         "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Geojson From Github Heatmap Rvp Death",
-            "description": "This endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
-            "operationId": "geojson_from_github_heatmap_rvp_death_api_v1_github_accident_heatmap_rvp_death_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "limit",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "type": "integer",
-                "minimum": 1,
-                "title": "Limit"
-                }
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/github/accident/itic-top200-all-road": {
-        "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Geojson From Github Select Id",
-            "description": "This endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
-            "operationId": "geojson_from_github_select_id_api_v1_github_accident_itic_top200_all_road_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "no",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "integer"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "title": "No"
-                }
-            },
-            {
-                "name": "gid",
-                "in": "query",
-                "required": false,
-                "schema": {
-                "anyOf": [
-                    {
-                    "type": "integer"
-                    },
-                    {
-                    "type": "null"
-                    }
-                ],
-                "title": "Gid"
-                }
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-        "/api/v1/github/accident/data/select": {
-        "get": {
-            "tags": [
-            "Github"
-            ],
-            "summary": "Github Selects Data Endpoint",
-            "description": "This endpoint is to get GEOJSON data from GITHUB, and can select the file to open from the file data_(select one number 0-9) parameter.",
-            "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
-            "security": [
-            {
-                "HTTPBearer": []
-            }
-            ],
-            "parameters": [
-            {
-                "name": "file",
-                "in": "query",
-                "required": true,
-                "schema": {
-                "type": "string",
-                "description": "Name of the GeoJSON file",
-                "title": "File"
-                },
-                "description": "Name of the GeoJSON file"
-            }
-            ],
-            "responses": {
-            "200": {
-                "description": "Successful Response",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/StandardResponse"
-                    }
-                }
-                }
-            },
-            "422": {
-                "description": "Validation Error",
-                "content": {
-                "application/json": {
-                    "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                    }
-                }
-                }
-            }
-            }
-        }
-        },
-         "/api/v1/pgDBs/places/th": {
-      "get": {
         "tags": [
           "postgres"
         ],
@@ -606,6 +436,176 @@
         }
       }
     },
+        "/api/v1/github/accident/heatmap-rvp-death": {
+        "get": {
+            "tags": [
+            "Github"
+            ],
+            "summary": "Geojson From Github Heatmap Rvp Death",
+            "description": "This endpoint to fetch **GeoJSON** data from GITHUB `heatmap-rvp-death.geojson`, \nit will include metadata about the file, mean total number to be awarded and prepare to return in **GeoJSON**.",
+            "operationId": "geojson_from_github_heatmap_rvp_death_api_v1_github_accident_heatmap_rvp_death_get",
+            "security": [
+            {
+                "HTTPBearer": []
+            }
+            ],
+            "parameters": [
+            {
+                "name": "limit",
+                "in": "query",
+                "required": false,
+                "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "title": "Limit"
+                }
+            }
+            ],
+            "responses": {
+            "200": {
+                "description": "Successful Response",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/StandardResponse"
+                    }
+                }
+                }
+            },
+            "422": {
+                "description": "Validation Error",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                }
+                }
+            }
+            }
+        }
+        },
+        "/api/v1/github/accident/itic-top200-all-road": {
+        "get": {
+            "tags": [
+            "Github"
+            ],
+            "summary": "Geojson From Github Select Id",
+            "description": "This endpoint to fetch **GeoJSON** data from **GITHUB** `itic-top200-all-road` with filtering by 'no' or 'gid'.",
+            "operationId": "geojson_from_github_select_id_api_v1_github_accident_itic_top200_all_road_get",
+            "security": [
+            {
+                "HTTPBearer": []
+            }
+            ],
+            "parameters": [
+            {
+                "name": "no",
+                "in": "query",
+                "required": false,
+                "schema": {
+                "anyOf": [
+                    {
+                    "type": "integer"
+                    },
+                    {
+                    "type": "null"
+                    }
+                ],
+                "title": "No"
+                }
+            },
+            {
+                "name": "gid",
+                "in": "query",
+                "required": false,
+                "schema": {
+                "anyOf": [
+                    {
+                    "type": "integer"
+                    },
+                    {
+                    "type": "null"
+                    }
+                ],
+                "title": "Gid"
+                }
+            }
+            ],
+            "responses": {
+            "200": {
+                "description": "Successful Response",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/StandardResponse"
+                    }
+                }
+                }
+            },
+            "422": {
+                "description": "Validation Error",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                }
+                }
+            }
+            }
+        }
+        },
+        "/api/v1/github/accident/data/select": {
+        "get": {
+            "tags": [
+            "Github"
+            ],
+            "summary": "Github Selects Data Endpoint",
+            "description": "This endpoint is to get GEOJSON data from GITHUB, and can select the file to open from the file data_(select one number 0-9) parameter.",
+            "operationId": "github_selects_data_endpoint_api_v1_github_accident_data_select_get",
+            "security": [
+            {
+                "HTTPBearer": []
+            }
+            ],
+            "parameters": [
+            {
+                "name": "file",
+                "in": "query",
+                "required": true,
+                "schema": {
+                "type": "string",
+                "description": "Name of the GeoJSON file",
+                "title": "File"
+                },
+                "description": "Name of the GeoJSON file"
+            }
+            ],
+            "responses": {
+            "200": {
+                "description": "Successful Response",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/StandardResponse"
+                    }
+                }
+                }
+            },
+            "422": {
+                "description": "Validation Error",
+                "content": {
+                "application/json": {
+                    "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                    }
+                }
+                }
+            }
+            }
+        }
+        },
     "/api/v1/opendeve/places/hospi": {
       "get": {
         "tags": [

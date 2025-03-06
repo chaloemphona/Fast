@@ -170,9 +170,9 @@ class GeoJSONResponse:
 app = FastAPI()
 security = HTTPBearer()
 
-@app.get("/")
-def read_root():
-    return {"Welcome to the Chalo API. For questions, type /chalo-docs next."}
+# @app.get("/")
+# def read_root():
+#     return {"Welcome to the Chalo API. For questions, type /chalo-docs next."}
 
 app.add_middleware(
     CORSMiddleware,
@@ -290,7 +290,7 @@ templates = Jinja2Templates(directory="templates")
 docs_url = "https://raw.githubusercontent.com/chaloemphona/Fast/refs/heads/main/docs.html"
 openapi_url = "https://raw.githubusercontent.com/chaloemphona/Fast/refs/heads/main/openapi.json"
 
-@app.get("/chalo-docs", response_class=HTMLResponse, tags=["Docs"])
+@app.get("/", response_class=HTMLResponse, tags=["Docs"])
 async def read_docs():
     """
     The document describes information about Chalo.com APIs, including how to access data, usage, and related details.
